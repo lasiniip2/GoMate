@@ -1,31 +1,86 @@
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 import { useAuth } from '@/context/AuthContext';
+import { destinationService } from '@/services/destinationService';
+import { transportService } from '@/services/transportService';
+import { Destination } from '@/types/destination.types';
+import { Route } from '@/types/transport.types';
+import QuickSearch from '@/components/home/QuickSearch';
+import SuggestedDestinations from '@/components/home/SuggestedDestinations';
+import PopularRoutes from '@/components/home/PopularRoutes';
+import RecentRoutes from '@/components/home/RecentRoutes';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 export default function HomeScreen() {
   const { user } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [suggestedDestinations, setSuggestedDestinations] = useState<Destination[]>([]);
+  const [popularRoutes, setPopularRoutes] = useState<Route[]>([]);
+  const [recentRoutes, setRecentRoutes] = useState<Route[]>([]);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      const [destinations, routes, recent] = await Promise.all([
+        destinationService.getSuggestedDestinations(),
+        transportService.getPopularRoutes(),
+        transportService.getRecentRoutes(),
+      ]);
+
+      setSuggestedDestinations(destinations);
+      setPopularRoutes(routes);
+      setRecentRoutes(recent);
+    } catch (error) {
+      console.error('Error loading home data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await loadData();
+    setRefreshing(false);
+  };
+
+  if (loading) {
+    return <LoadingSpinner message="Loading travel options..." />;
+  }
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good Morning';
+    if (hour < 18) return 'Good Afternoon';
+    return 'Good Evening';
+  };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.greeting}>Welcome back,</Text>
-          <Text style={styles.userName}>{user?.name || 'User'}</Text>
-        </View>
-        
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Search</Text>
-          <Text style={styles.placeholder}>Search bar will appear here</Text>
-        </View>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#007AFF" />
+      }
+    >
+      <View style={styles.header}>
+        <Text style={styles.greeting}>{getGreeting()},</Text>
+        <Text style={styles.userName}>{user?.name || 'Traveler'}</Text>
+      </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Suggested Destinations</Text>
-          <Text style={styles.placeholder}>Destinations will appear here</Text>
-        </View>
+      <QuickSearch />
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Popular Routes</Text>
-          <Text style={styles.placeholder}>Popular routes will appear here</Text>
-        </View>
+      <SuggestedDestinations destinations={suggestedDestinations} />
+
+      <PopularRoutes routes={popularRoutes} />
+
+      {recentRoutes.length > 0 && <RecentRoutes routes={recentRoutes} />}
+
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>Plan your next adventure with GoMate</Text>
       </View>
     </ScrollView>
   );
@@ -37,11 +92,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#F2F2F7',
   },
   content: {
-    padding: 20,
+    paddingBottom: 40,
   },
   header: {
-    marginBottom: 32,
-    paddingTop: 20,
+    paddingHorizontal: 20,
+    paddingTop: 60,
+    paddingBottom: 24,
   },
   greeting: {
     fontSize: 16,
@@ -53,21 +109,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#1C1C1E',
   },
-  section: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
+  footer: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    alignItems: 'center',
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 12,
-  },
-  placeholder: {
+  footerText: {
     fontSize: 14,
     color: '#8E8E93',
-    fontStyle: 'italic',
+    textAlign: 'center',
   },
 });

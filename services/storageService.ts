@@ -61,6 +61,37 @@ export const storageService = {
     }
   },
 
+  // Generic save item
+  saveItem: async (key: string, value: any): Promise<void> => {
+    try {
+      await AsyncStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.error(`Error saving ${key}:`, error);
+      throw error;
+    }
+  },
+
+  // Generic get item
+  getItem: async (key: string): Promise<any> => {
+    try {
+      const data = await AsyncStorage.getItem(key);
+      return data ? JSON.parse(data) : null;
+    } catch (error) {
+      console.error(`Error getting ${key}:`, error);
+      return null;
+    }
+  },
+
+  // Generic remove item
+  removeItem: async (key: string): Promise<void> => {
+    try {
+      await AsyncStorage.removeItem(key);
+    } catch (error) {
+      console.error(`Error removing ${key}:`, error);
+      throw error;
+    }
+  },
+
   // Clear all data
   clearAll: async (): Promise<void> => {
     try {
