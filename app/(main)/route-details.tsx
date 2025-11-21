@@ -11,6 +11,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { transportService } from '@/services/transportService';
 import { Route, Schedule } from '@/types/transport.types';
+import { useFavourites } from '@/context/FavouritesContext';
 
 export default function RouteDetailsScreen() {
   const router = useRouter();
@@ -18,6 +19,9 @@ export default function RouteDetailsScreen() {
   const [route, setRoute] = useState<Route | null>(null);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [loading, setLoading] = useState(true);
+  const { isRouteFavourite, addRoute, removeRoute } = useFavourites();
+
+  const isFavourite = route ? isRouteFavourite(route.id) : false;
 
   useEffect(() => {
     loadRouteData();
@@ -38,6 +42,15 @@ export default function RouteDetailsScreen() {
       console.error('Error loading route:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFavouriteToggle = async () => {
+    if (!route) return;
+    if (isFavourite) {
+      await removeRoute(route.id);
+    } else {
+      await addRoute(route);
     }
   };
 
@@ -81,7 +94,13 @@ export default function RouteDetailsScreen() {
           <Ionicons name="arrow-back" size={24} color="#1C1C1E" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Route Details</Text>
-        <View style={styles.placeholder} />
+        <TouchableOpacity style={styles.favouriteHeaderBtn} onPress={handleFavouriteToggle}>
+          <Ionicons
+            name={isFavourite ? 'heart' : 'heart-outline'}
+            size={24}
+            color={isFavourite ? '#FF3B30' : '#1C1C1E'}
+          />
+        </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -249,8 +268,11 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#1C1C1E',
   },
-  placeholder: {
+  favouriteHeaderBtn: {
     width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   scrollView: {
     flex: 1,

@@ -1,30 +1,52 @@
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { useFavourites } from '@/context/FavouritesContext';
+import FavouriteDestinations from '@/components/favourites/FavouriteDestinations';
+import FavouriteRoutes from '@/components/favourites/FavouriteRoutes';
+import FavouriteSchedules from '@/components/favourites/FavouriteSchedules';
+import EmptyFavourites from '@/components/favourites/EmptyFavourites';
 
 export default function FavouritesScreen() {
-  return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Favourites</Text>
-          <Text style={styles.subtitle}>Your saved destinations, routes, and schedules</Text>
-        </View>
+  const {
+    favouriteDestinations,
+    favouriteRoutes,
+    favouriteSchedules,
+    loading,
+  } = useFavourites();
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Favourite Destinations</Text>
-          <Text style={styles.placeholder}>Your saved destinations will appear here</Text>
-        </View>
+  const hasAnyFavourites =
+    favouriteDestinations.length > 0 ||
+    favouriteRoutes.length > 0 ||
+    favouriteSchedules.length > 0;
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Favourite Routes</Text>
-          <Text style={styles.placeholder}>Your saved routes will appear here</Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Favourite Schedules</Text>
-          <Text style={styles.placeholder}>Your saved schedules will appear here</Text>
-        </View>
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007AFF" />
+        <Text style={styles.loadingText}>Loading favourites...</Text>
       </View>
-    </ScrollView>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Favourites</Text>
+        <Text style={styles.headerSubtitle}>
+          Your saved destinations, routes, and schedules
+        </Text>
+      </View>
+
+      {!hasAnyFavourites ? (
+        <EmptyFavourites />
+      ) : (
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          <FavouriteDestinations favourites={favouriteDestinations} />
+          <FavouriteRoutes favourites={favouriteRoutes} />
+          <FavouriteSchedules favourites={favouriteSchedules} />
+        </ScrollView>
+      )}
+    </View>
   );
 }
 
@@ -33,38 +55,37 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F2F2F7',
   },
-  content: {
-    padding: 20,
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F2F2F7',
   },
-  header: {
-    marginBottom: 24,
-    paddingTop: 20,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#1C1C1E',
-    marginBottom: 4,
-  },
-  subtitle: {
+  loadingText: {
+    marginTop: 12,
     fontSize: 16,
     color: '#8E8E93',
   },
-  section: {
+  header: {
+    paddingHorizontal: 20,
+    paddingTop: 60,
+    paddingBottom: 20,
     backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5EA',
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+  headerTitle: {
+    fontSize: 32,
+    fontWeight: 'bold',
     color: '#1C1C1E',
-    marginBottom: 12,
   },
-  placeholder: {
-    fontSize: 14,
+  headerSubtitle: {
+    fontSize: 16,
     color: '#8E8E93',
-    fontStyle: 'italic',
+    marginTop: 4,
+  },
+  content: {
+    flex: 1,
+    padding: 20,
   },
 });

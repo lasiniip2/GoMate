@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Destination } from '@/types/destination.types';
+import { useFavourites } from '@/context/FavouritesContext';
 
 interface DestinationCardProps {
   destination: Destination;
@@ -14,6 +15,17 @@ const CARD_WIDTH = width * 0.7;
 
 export default function DestinationCard({ destination, onPress, compact = false }: DestinationCardProps) {
   const cardStyle = compact ? styles.cardCompact : styles.card;
+  const { isDestinationFavourite, addDestination, removeDestination } = useFavourites();
+  const isFavourite = isDestinationFavourite(destination.id);
+
+  const handleFavouritePress = async (e: any) => {
+    e.stopPropagation();
+    if (isFavourite) {
+      await removeDestination(destination.id);
+    } else {
+      await addDestination(destination);
+    }
+  };
   
   return (
     <TouchableOpacity style={cardStyle} onPress={onPress} activeOpacity={0.8}>
@@ -25,15 +37,24 @@ export default function DestinationCard({ destination, onPress, compact = false 
       <View style={styles.overlay} />
       <View style={styles.content}>
         <View style={styles.header}>
-          <View style={styles.categoryBadge}>
-            <Text style={styles.categoryText}>{destination.category}</Text>
-          </View>
-          {destination.popular && (
-            <View style={styles.popularBadge}>
-              <Ionicons name="flame" size={14} color="#FF3B30" />
-              <Text style={styles.popularText}>Popular</Text>
+          <View style={styles.leftBadges}>
+            <View style={styles.categoryBadge}>
+              <Text style={styles.categoryText}>{destination.category}</Text>
             </View>
-          )}
+            {destination.popular && (
+              <View style={styles.popularBadge}>
+                <Ionicons name="flame" size={14} color="#FF3B30" />
+                <Text style={styles.popularText}>Popular</Text>
+              </View>
+            )}
+          </View>
+          <TouchableOpacity style={styles.favouriteBtn} onPress={handleFavouritePress}>
+            <Ionicons
+              name={isFavourite ? 'heart' : 'heart-outline'}
+              size={20}
+              color={isFavourite ? '#FF3B30' : '#fff'}
+            />
+          </TouchableOpacity>
         </View>
         <View style={styles.info}>
           <Text style={styles.name} numberOfLines={1}>
@@ -100,6 +121,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  leftBadges: {
+    flexDirection: 'row',
+    gap: 8,
+    flex: 1,
+  },
   categoryBadge: {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     paddingHorizontal: 12,
@@ -125,6 +151,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     color: '#FF3B30',
+  },
+  favouriteBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   info: {
     gap: 4,

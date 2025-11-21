@@ -6,6 +6,7 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { FavouritesProvider } from '@/context/FavouritesContext';
 
 function RootLayoutNav() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -41,10 +42,12 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <RootLayoutNav />
-        <StatusBar style="auto" />
-      </ThemeProvider>
+      <FavouritesProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <RootLayoutNav />
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </FavouritesProvider>
     </AuthProvider>
   );
 }

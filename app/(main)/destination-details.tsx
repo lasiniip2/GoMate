@@ -14,6 +14,7 @@ import { destinationService } from '@/services/destinationService';
 import { transportService } from '@/services/transportService';
 import { Destination } from '@/types/destination.types';
 import { Route } from '@/types/transport.types';
+import { useFavourites } from '@/context/FavouritesContext';
 
 export default function DestinationDetailsScreen() {
   const router = useRouter();
@@ -21,6 +22,9 @@ export default function DestinationDetailsScreen() {
   const [destination, setDestination] = useState<Destination | null>(null);
   const [routes, setRoutes] = useState<Route[]>([]);
   const [loading, setLoading] = useState(true);
+  const { isDestinationFavourite, addDestination, removeDestination } = useFavourites();
+
+  const isFavourite = destination ? isDestinationFavourite(destination.id) : false;
 
   useEffect(() => {
     loadDestinationData();
@@ -43,6 +47,15 @@ export default function DestinationDetailsScreen() {
       console.error('Error loading destination:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFavouriteToggle = async () => {
+    if (!destination) return;
+    if (isFavourite) {
+      await removeDestination(destination.id);
+    } else {
+      await addDestination(destination);
     }
   };
 
@@ -93,6 +106,13 @@ export default function DestinationDetailsScreen() {
           <Image source={{ uri: destination.image }} style={styles.image} />
           <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
             <Ionicons name="arrow-back" size={24} color="#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.favouriteBtn} onPress={handleFavouriteToggle}>
+            <Ionicons
+              name={isFavourite ? 'heart' : 'heart-outline'}
+              size={24}
+              color={isFavourite ? '#FF3B30' : '#fff'}
+            />
           </TouchableOpacity>
           <View style={styles.imageOverlay} />
         </View>

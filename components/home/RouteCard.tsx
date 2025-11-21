@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Route } from '@/types/transport.types';
+import { useFavourites } from '@/context/FavouritesContext';
 
 interface RouteCardProps {
   route: Route;
@@ -9,6 +10,18 @@ interface RouteCardProps {
 }
 
 export default function RouteCard({ route, onPress }: RouteCardProps) {
+  const { isRouteFavourite, addRoute, removeRoute } = useFavourites();
+  const isFavourite = isRouteFavourite(route.id);
+
+  const handleFavouritePress = async (e: any) => {
+    e.stopPropagation();
+    if (isFavourite) {
+      await removeRoute(route.id);
+    } else {
+      await addRoute(route);
+    }
+  };
+
   const getTransportIcon = () => {
     switch (route.transportMode) {
       case 'train':
@@ -58,7 +71,14 @@ export default function RouteCard({ route, onPress }: RouteCardProps) {
         )}
       </View>
 
-      <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
+      <TouchableOpacity style={styles.favouriteBtn} onPress={handleFavouritePress}>
+        <Ionicons
+          name={isFavourite ? 'heart' : 'heart-outline'}
+          size={20}
+          color={isFavourite ? '#FF3B30' : '#8E8E93'}
+        />
+      </TouchableOpacity>
+      <Ionicons name="chevron-forward" size={20} color="#C7C7CC" style={styles.chevron} />
     </TouchableOpacity>
   );
 }
@@ -130,5 +150,16 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600',
     color: '#34C759',
+  },
+  favouriteBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 4,
+  },
+  chevron: {
+    marginLeft: 4,
   },
 });
