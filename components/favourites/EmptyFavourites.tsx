@@ -1,0 +1,1 @@
+// Empty state for favourites

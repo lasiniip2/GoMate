@@ -1,0 +1,1 @@
+// Recently viewed routes component

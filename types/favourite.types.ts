@@ -1,0 +1,1 @@
+// Favourite related types

@@ -1,0 +1,1 @@
+// Suggested destinations component

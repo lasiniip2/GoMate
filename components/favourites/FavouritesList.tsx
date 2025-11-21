@@ -1,0 +1,1 @@
+// Favourites list component

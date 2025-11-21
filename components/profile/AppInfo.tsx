@@ -1,0 +1,1 @@
+// App information component
