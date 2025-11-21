@@ -4,14 +4,18 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
   TextInput,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { transportService } from '@/services/transportService';
 import { Route, Schedule, BusStop, TrainStation } from '@/types/transport.types';
+import RoutesList from '@/components/routes/RoutesList';
+import ScheduleCard from '@/components/routes/ScheduleCard';
+import TransportModeSelector from '@/components/routes/TransportModeSelector';
+import NearbyStations from '@/components/routes/NearbyStations';
 
 type TransportFilter = 'all' | 'train' | 'bus';
 
@@ -78,17 +82,6 @@ export default function RoutesScreen() {
     });
   };
 
-  const getTransportIcon = (mode: string) => {
-    switch (mode) {
-      case 'train':
-        return 'train';
-      case 'bus':
-        return 'bus';
-      default:
-        return 'car';
-    }
-  };
-
   const getUpcomingSchedules = () => {
     return schedules.slice(0, 5);
   };
@@ -132,46 +125,7 @@ export default function RoutesScreen() {
         </View>
       </View>
 
-      <View style={styles.filterContainer}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <TouchableOpacity
-            style={[styles.filterChip, filter === 'all' && styles.filterChipActive]}
-            onPress={() => setFilter('all')}
-          >
-            <Text style={[styles.filterText, filter === 'all' && styles.filterTextActive]}>
-              All
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.filterChip, filter === 'train' && styles.filterChipActive]}
-            onPress={() => setFilter('train')}
-          >
-            <Ionicons
-              name="train"
-              size={16}
-              color={filter === 'train' ? '#fff' : '#007AFF'}
-              style={styles.filterIcon}
-            />
-            <Text style={[styles.filterText, filter === 'train' && styles.filterTextActive]}>
-              Trains
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.filterChip, filter === 'bus' && styles.filterChipActive]}
-            onPress={() => setFilter('bus')}
-          >
-            <Ionicons
-              name="bus"
-              size={16}
-              color={filter === 'bus' ? '#fff' : '#007AFF'}
-              style={styles.filterIcon}
-            />
-            <Text style={[styles.filterText, filter === 'bus' && styles.filterTextActive]}>
-              Buses
-            </Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </View>
+      <TransportModeSelector selectedMode={filter} onModeChange={setFilter} />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Routes Section */}
@@ -179,58 +133,7 @@ export default function RoutesScreen() {
           <Text style={styles.sectionTitle}>
             Available Routes ({filteredRoutes.length})
           </Text>
-          {filteredRoutes.length > 0 ? (
-            filteredRoutes.map(route => (
-              <TouchableOpacity
-                key={route.id}
-                style={styles.routeCard}
-                onPress={() => handleRoutePress(route)}
-                activeOpacity={0.7}
-              >
-                <View style={styles.routeIconContainer}>
-                  <Ionicons
-                    name={getTransportIcon(route.transportMode)}
-                    size={24}
-                    color="#007AFF"
-                  />
-                </View>
-                <View style={styles.routeInfo}>
-                  <View style={styles.routeHeader}>
-                    <Text style={styles.routeName}>{route.name}</Text>
-                    {route.scenic && (
-                      <View style={styles.scenicBadge}>
-                        <Ionicons name="eye" size={12} color="#34C759" />
-                        <Text style={styles.scenicText}>Scenic</Text>
-                      </View>
-                    )}
-                  </View>
-                  <Text style={styles.routeFromTo}>
-                    {route.from} → {route.to}
-                  </Text>
-                  <View style={styles.routeDetails}>
-                    <View style={styles.routeDetail}>
-                      <Ionicons name="time-outline" size={14} color="#8E8E93" />
-                      <Text style={styles.routeDetailText}>{route.duration}</Text>
-                    </View>
-                    <View style={styles.routeDetail}>
-                      <Ionicons name="navigate-outline" size={14} color="#8E8E93" />
-                      <Text style={styles.routeDetailText}>{route.distance}</Text>
-                    </View>
-                    <View style={styles.routeDetail}>
-                      <Ionicons name="cash-outline" size={14} color="#8E8E93" />
-                      <Text style={styles.routeDetailText}>LKR {route.price}</Text>
-                    </View>
-                  </View>
-                </View>
-                <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
-              </TouchableOpacity>
-            ))
-          ) : (
-            <View style={styles.emptyState}>
-              <Ionicons name="search-outline" size={48} color="#C7C7CC" />
-              <Text style={styles.emptyText}>No routes found</Text>
-            </View>
-          )}
+          <RoutesList routes={filteredRoutes} onRoutePress={handleRoutePress} />
         </View>
 
         {/* Upcoming Schedules Section */}
@@ -240,46 +143,7 @@ export default function RoutesScreen() {
             {upcomingSchedules.map(schedule => {
               const route = routes.find(r => r.id === schedule.routeId);
               if (!route) return null;
-              return (
-                <View key={schedule.id} style={styles.scheduleCard}>
-                  <View style={styles.scheduleIconContainer}>
-                    <Ionicons
-                      name={getTransportIcon(route.transportMode)}
-                      size={20}
-                      color="#007AFF"
-                    />
-                  </View>
-                  <View style={styles.scheduleInfo}>
-                    <Text style={styles.scheduleName}>
-                      {schedule.trainName || schedule.busNumber}
-                    </Text>
-                    <Text style={styles.scheduleRoute}>{route.name}</Text>
-                    <View style={styles.scheduleTime}>
-                      <Text style={styles.scheduleTimeText}>
-                        Departs: {schedule.departureTime}
-                      </Text>
-                      <Text style={styles.scheduleTimeText}>
-                        Arrives: {schedule.arrivalTime}
-                      </Text>
-                    </View>
-                  </View>
-                  <View
-                    style={[
-                      styles.statusBadge,
-                      schedule.status === 'delayed' && styles.statusDelayed,
-                      schedule.status === 'cancelled' && styles.statusCancelled,
-                    ]}
-                  >
-                    <Text style={styles.statusText}>
-                      {schedule.status === 'on-time'
-                        ? 'On Time'
-                        : schedule.status === 'delayed'
-                        ? 'Delayed'
-                        : 'Cancelled'}
-                    </Text>
-                  </View>
-                </View>
-              );
+              return <ScheduleCard key={schedule.id} schedule={schedule} route={route} />;
             })}
           </View>
         )}
@@ -287,42 +151,7 @@ export default function RoutesScreen() {
         {/* Nearby Stations Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Nearby Stations</Text>
-          {trainStations.length > 0 && (
-            <View style={styles.stationsContainer}>
-              <Text style={styles.stationType}>Train Stations</Text>
-              {trainStations.map(station => (
-                <View key={station.id} style={styles.stationCard}>
-                  <View style={styles.stationIconContainer}>
-                    <Ionicons name="train" size={20} color="#007AFF" />
-                  </View>
-                  <View style={styles.stationInfo}>
-                    <Text style={styles.stationName}>{station.name}</Text>
-                    <Text style={styles.stationDetails}>
-                      {station.code} • {station.city}
-                    </Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-          )}
-          {busStops.length > 0 && (
-            <View style={styles.stationsContainer}>
-              <Text style={styles.stationType}>Bus Stops</Text>
-              {busStops.map(stop => (
-                <View key={stop.id} style={styles.stationCard}>
-                  <View style={styles.stationIconContainer}>
-                    <Ionicons name="bus" size={20} color="#007AFF" />
-                  </View>
-                  <View style={styles.stationInfo}>
-                    <Text style={styles.stationName}>{stop.name}</Text>
-                    <Text style={styles.stationDetails}>
-                      {stop.code} • {stop.city}
-                    </Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-          )}
+          <NearbyStations trainStations={trainStations} busStops={busStops} />
         </View>
       </ScrollView>
     </View>
@@ -384,36 +213,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#1C1C1E',
   },
-  filterContainer: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
-  },
-  filterChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#F2F2F7',
-    marginRight: 10,
-  },
-  filterChipActive: {
-    backgroundColor: '#007AFF',
-  },
-  filterIcon: {
-    marginRight: 6,
-  },
-  filterText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#007AFF',
-  },
-  filterTextActive: {
-    color: '#fff',
-  },
   content: {
     flex: 1,
   },
@@ -425,190 +224,5 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#1C1C1E',
     marginBottom: 16,
-  },
-  routeCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  routeIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#F2F2F7',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  routeInfo: {
-    flex: 1,
-  },
-  routeHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  routeName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    flex: 1,
-  },
-  scenicBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#E8F5E9',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-    marginLeft: 8,
-  },
-  scenicText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#34C759',
-    marginLeft: 4,
-  },
-  routeFromTo: {
-    fontSize: 14,
-    color: '#8E8E93',
-    marginBottom: 8,
-  },
-  routeDetails: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  routeDetail: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  routeDetailText: {
-    fontSize: 12,
-    color: '#8E8E93',
-    marginLeft: 4,
-  },
-  scheduleCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  scheduleIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#F2F2F7',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  scheduleInfo: {
-    flex: 1,
-  },
-  scheduleName: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 2,
-  },
-  scheduleRoute: {
-    fontSize: 13,
-    color: '#8E8E93',
-    marginBottom: 6,
-  },
-  scheduleTime: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  scheduleTimeText: {
-    fontSize: 12,
-    color: '#8E8E93',
-  },
-  statusBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 6,
-    backgroundColor: '#E8F5E9',
-  },
-  statusDelayed: {
-    backgroundColor: '#FFF3E0',
-  },
-  statusCancelled: {
-    backgroundColor: '#FFEBEE',
-  },
-  statusText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#34C759',
-  },
-  stationsContainer: {
-    marginBottom: 20,
-  },
-  stationType: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 12,
-  },
-  stationCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  stationIconContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#F2F2F7',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  stationInfo: {
-    flex: 1,
-  },
-  stationName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 2,
-  },
-  stationDetails: {
-    fontSize: 12,
-    color: '#8E8E93',
-  },
-  emptyState: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 40,
-  },
-  emptyText: {
-    fontSize: 14,
-    color: '#8E8E93',
-    marginTop: 12,
   },
 });
