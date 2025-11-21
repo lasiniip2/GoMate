@@ -6,14 +6,17 @@ import { Destination } from '@/types/destination.types';
 interface DestinationCardProps {
   destination: Destination;
   onPress: () => void;
+  compact?: boolean;
 }
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.7;
 
-export default function DestinationCard({ destination, onPress }: DestinationCardProps) {
+export default function DestinationCard({ destination, onPress, compact = false }: DestinationCardProps) {
+  const cardStyle = compact ? styles.cardCompact : styles.card;
+  
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
+    <TouchableOpacity style={cardStyle} onPress={onPress} activeOpacity={0.8}>
       <Image
         source={{ uri: destination.image }}
         style={styles.image}
@@ -55,6 +58,18 @@ const styles = StyleSheet.create({
     height: 220,
     borderRadius: 16,
     marginRight: 16,
+    overflow: 'hidden',
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  cardCompact: {
+    width: '100%',
+    height: 150,
+    borderRadius: 12,
     overflow: 'hidden',
     backgroundColor: '#fff',
     shadowColor: '#000',

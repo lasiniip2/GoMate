@@ -13,11 +13,11 @@ export const destinationService = {
     }
   },
 
-  // Get suggested destinations (first 6)
+  // Get suggested destinations (all destinations for category filtering)
   getSuggestedDestinations: async (): Promise<Destination[]> => {
     try {
       const destinations = await apiClient.get<Destination[]>('/destinations');
-      return destinations.slice(0, 6);
+      return destinations;
     } catch (error) {
       console.error('Error fetching suggested destinations:', error);
       return [];
