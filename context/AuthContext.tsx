@@ -9,6 +9,8 @@ interface AuthContextType {
   login: (credentials: LoginCredentials) => Promise<{ success: boolean; message?: string }>;
   signup: (credentials: SignupCredentials) => Promise<{ success: boolean; message?: string }>;
   logout: () => Promise<void>;
+  updateProfile: (data: Partial<User>) => Promise<void>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -67,6 +69,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const updateProfile = async (data: Partial<User>) => {
+    try {
+      if (user) {
+        const updatedUser = { ...user, ...data };
+        await authService.updateUser(updatedUser);
+        setUser(updatedUser);
+      }
+    } catch (error) {
+      console.error('Update profile error:', error);
+      throw error;
+    }
+  };
+
+  const changePassword = async (currentPassword: string, newPassword: string): Promise<boolean> => {
+    try {
+      if (!user) return false;
+      const success = await authService.changePassword(user.email, currentPassword, newPassword);
+      return success;
+    } catch (error) {
+      console.error('Change password error:', error);
+      return false;
+    }
+  };
+
   const value = {
     user,
     isLoading,
@@ -74,6 +100,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     login,
     signup,
     logout,
+    updateProfile,
+    changePassword,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

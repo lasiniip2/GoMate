@@ -149,4 +149,60 @@ export const authService = {
       return false;
     }
   },
+
+  // Update user profile
+  updateUser: async (user: User): Promise<void> => {
+    try {
+      // Get all users
+      const users = await storageService.getUsersDB();
+      
+      // Find and update the user in the database
+      const userIndex = users.findIndex((u: StoredUser) => u.id === user.id);
+      if (userIndex !== -1) {
+        users[userIndex] = {
+          ...users[userIndex],
+          name: user.name,
+          email: user.email,
+        };
+        await storageService.saveUsersDB(users);
+      }
+      
+      // Update current user
+      await storageService.saveUser(user);
+    } catch (error) {
+      console.error('Update user error:', error);
+      throw error;
+    }
+  },
+
+  // Change password
+  changePassword: async (email: string, currentPassword: string, newPassword: string): Promise<boolean> => {
+    try {
+      // Get all users
+      const users = await storageService.getUsersDB();
+      
+      // Find user
+      const userIndex = users.findIndex(
+        (u: StoredUser) => u.email.toLowerCase() === email.toLowerCase()
+      );
+      
+      if (userIndex === -1) {
+        return false;
+      }
+      
+      // Verify current password
+      if (users[userIndex].password !== currentPassword) {
+        return false;
+      }
+      
+      // Update password
+      users[userIndex].password = newPassword;
+      await storageService.saveUsersDB(users);
+      
+      return true;
+    } catch (error) {
+      console.error('Change password error:', error);
+      return false;
+    }
+  },
 };
