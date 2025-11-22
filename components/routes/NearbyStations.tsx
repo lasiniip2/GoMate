@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { BusStop, TrainStation } from '@/types/transport.types';
 import StationCard from './StationCard';
+import { useAppTheme } from '@/hooks/use-app-theme';
 
 interface NearbyStationsProps {
   trainStations: TrainStation[];
@@ -9,11 +10,13 @@ interface NearbyStationsProps {
 }
 
 export default function NearbyStations({ trainStations, busStops }: NearbyStationsProps) {
+  const { text } = useAppTheme();
+  
   return (
     <View>
       {trainStations.length > 0 && (
         <View style={styles.stationsContainer}>
-          <Text style={styles.stationType}>Train Stations</Text>
+          <Text style={[styles.stationType, { color: text }]}>Train Stations</Text>
           {trainStations.map(station => (
             <StationCard key={station.id} station={station} type="train" />
           ))}
@@ -21,7 +24,7 @@ export default function NearbyStations({ trainStations, busStops }: NearbyStatio
       )}
       {busStops.length > 0 && (
         <View style={styles.stationsContainer}>
-          <Text style={styles.stationType}>Bus Stops</Text>
+          <Text style={[styles.stationType, { color: text }]}>Bus Stops</Text>
           {busStops.map(stop => (
             <StationCard key={stop.id} station={stop} type="bus" />
           ))}
@@ -38,7 +41,6 @@ const styles = StyleSheet.create({
   stationType: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1C1C1E',
     marginBottom: 12,
   },
 });

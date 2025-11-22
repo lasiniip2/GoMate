@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { FavouriteRoute } from '@/types/favourite.types';
 import { useFavourites } from '@/context/FavouritesContext';
+import { useAppTheme } from '@/hooks/use-app-theme';
 
 interface FavouriteRoutesProps {
   favourites: FavouriteRoute[];
@@ -12,6 +13,7 @@ interface FavouriteRoutesProps {
 export default function FavouriteRoutes({ favourites }: FavouriteRoutesProps) {
   const router = useRouter();
   const { removeRoute } = useFavourites();
+  const { card, text, textSecondary, backgroundSecondary, primary, icon } = useAppTheme();
 
   const handlePress = (routeId: string) => {
     router.push({
@@ -41,34 +43,34 @@ export default function FavouriteRoutes({ favourites }: FavouriteRoutesProps) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Routes ({favourites.length})</Text>
+      <Text style={[styles.sectionTitle, { color: text }]}>Routes ({favourites.length})</Text>
       {favourites.map(fav => (
-        <View key={fav.id} style={styles.card}>
+        <View key={fav.id} style={[styles.card, { backgroundColor: card }]}>
           <TouchableOpacity
             style={styles.cardContent}
             onPress={() => handlePress(fav.route.id)}
             activeOpacity={0.7}
           >
-            <View style={styles.iconContainer}>
+            <View style={[styles.iconContainer, { backgroundColor: backgroundSecondary }]}>
               <Ionicons
                 name={getTransportIcon(fav.route.transportMode)}
                 size={24}
-                color="#007AFF"
+                color={primary}
               />
             </View>
             <View style={styles.info}>
-              <Text style={styles.name}>{fav.route.name}</Text>
-              <Text style={styles.fromTo}>
+              <Text style={[styles.name, { color: text }]}>{fav.route.name}</Text>
+              <Text style={[styles.fromTo, { color: textSecondary }]}>
                 {fav.route.from} → {fav.route.to}
               </Text>
               <View style={styles.details}>
                 <View style={styles.detail}>
-                  <Ionicons name="time-outline" size={12} color="#8E8E93" />
-                  <Text style={styles.detailText}>{fav.route.duration}</Text>
+                  <Ionicons name="time-outline" size={12} color={icon} />
+                  <Text style={[styles.detailText, { color: textSecondary }]}>{fav.route.duration}</Text>
                 </View>
                 <View style={styles.detail}>
-                  <Ionicons name="cash-outline" size={12} color="#8E8E93" />
-                  <Text style={styles.detailText}>LKR {fav.route.price}</Text>
+                  <Ionicons name="cash-outline" size={12} color={icon} />
+                  <Text style={[styles.detailText, { color: textSecondary }]}>LKR {fav.route.price}</Text>
                 </View>
               </View>
             </View>
@@ -92,13 +94,11 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1C1C1E',
     marginBottom: 12,
   },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 12,
     marginBottom: 12,
@@ -117,7 +117,6 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#F2F2F7',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -128,12 +127,10 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#1C1C1E',
     marginBottom: 4,
   },
   fromTo: {
     fontSize: 13,
-    color: '#8E8E93',
     marginBottom: 6,
   },
   details: {
@@ -147,7 +144,6 @@ const styles = StyleSheet.create({
   },
   detailText: {
     fontSize: 12,
-    color: '#8E8E93',
     marginLeft: 4,
   },
   removeButton: {

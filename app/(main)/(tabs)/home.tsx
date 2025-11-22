@@ -10,6 +10,7 @@ import SuggestedDestinations from '@/components/home/SuggestedDestinations';
 import PopularRoutes from '@/components/home/PopularRoutes';
 import RecentRoutes from '@/components/home/RecentRoutes';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { useAppTheme } from '@/hooks/use-app-theme';
 
 export default function HomeScreen() {
   const { user } = useAuth();
@@ -18,6 +19,8 @@ export default function HomeScreen() {
   const [suggestedDestinations, setSuggestedDestinations] = useState<Destination[]>([]);
   const [popularRoutes, setPopularRoutes] = useState<Route[]>([]);
   const [recentRoutes, setRecentRoutes] = useState<Route[]>([]);
+
+  const { background, text, textSecondary, primary } = useAppTheme();
 
   useEffect(() => {
     loadData();
@@ -60,15 +63,15 @@ export default function HomeScreen() {
 
   return (
     <ScrollView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: background }]}
       contentContainerStyle={styles.content}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#007AFF" />
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor={primary} />
       }
     >
       <View style={styles.header}>
-        <Text style={styles.greeting}>{getGreeting()},</Text>
-        <Text style={styles.userName}>{user?.name || 'Traveler'}</Text>
+        <Text style={[styles.greeting, { color: textSecondary }]}>{getGreeting()},</Text>
+        <Text style={[styles.userName, { color: text }]}>{user?.name || 'Traveler'}</Text>
       </View>
 
       <QuickSearch />
@@ -80,7 +83,7 @@ export default function HomeScreen() {
       {recentRoutes.length > 0 && <RecentRoutes routes={recentRoutes} />}
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Plan your next adventure with GoMate</Text>
+        <Text style={[styles.footerText, { color: textSecondary }]}>Plan your next adventure with GoMate</Text>
       </View>
     </ScrollView>
   );
@@ -89,7 +92,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
   },
   content: {
     paddingBottom: 40,
@@ -101,13 +103,11 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 16,
-    color: '#8E8E93',
     marginBottom: 4,
   },
   userName: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#1C1C1E',
   },
   footer: {
     paddingHorizontal: 20,
@@ -116,7 +116,6 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 14,
-    color: '#8E8E93',
     textAlign: 'center',
   },
 });

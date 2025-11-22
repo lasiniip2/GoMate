@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Route } from '@/types/transport.types';
 import { useFavourites } from '@/context/FavouritesContext';
+import { useAppTheme } from '@/hooks/use-app-theme';
 
 interface RouteCardProps {
   route: Route;
@@ -12,6 +13,7 @@ interface RouteCardProps {
 export default function RouteCard({ route, onPress }: RouteCardProps) {
   const { isRouteFavourite, addRoute, removeRoute } = useFavourites();
   const isFavourite = isRouteFavourite(route.id);
+  const { card, text, textSecondary, backgroundSecondary, primary, icon } = useAppTheme();
 
   const handleFavouritePress = async (e: any) => {
     e.stopPropagation();
@@ -36,30 +38,30 @@ export default function RouteCard({ route, onPress }: RouteCardProps) {
   };
 
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
-      <View style={styles.iconContainer}>
-        <Ionicons name={getTransportIcon()} size={24} color="#007AFF" />
+    <TouchableOpacity style={[styles.card, { backgroundColor: card }]} onPress={onPress} activeOpacity={0.7}>
+      <View style={[styles.iconContainer, { backgroundColor: backgroundSecondary }]}>
+        <Ionicons name={getTransportIcon()} size={24} color={primary} />
       </View>
       
       <View style={styles.content}>
         <View style={styles.header}>
-          <Text style={styles.from} numberOfLines={1}>{route.from}</Text>
-          <Ionicons name="arrow-forward" size={16} color="#8E8E93" />
-          <Text style={styles.to} numberOfLines={1}>{route.to}</Text>
+          <Text style={[styles.from, { color: text }]} numberOfLines={1}>{route.from}</Text>
+          <Ionicons name="arrow-forward" size={16} color={textSecondary} />
+          <Text style={[styles.to, { color: text }]} numberOfLines={1}>{route.to}</Text>
         </View>
         
         <View style={styles.details}>
           <View style={styles.detailItem}>
-            <Ionicons name="time-outline" size={14} color="#8E8E93" />
-            <Text style={styles.detailText}>{route.duration}</Text>
+            <Ionicons name="time-outline" size={14} color={icon} />
+            <Text style={[styles.detailText, { color: textSecondary }]}>{route.duration}</Text>
           </View>
           <View style={styles.detailItem}>
-            <Ionicons name="navigate-outline" size={14} color="#8E8E93" />
-            <Text style={styles.detailText}>{route.distance}</Text>
+            <Ionicons name="navigate-outline" size={14} color={icon} />
+            <Text style={[styles.detailText, { color: textSecondary }]}>{route.distance}</Text>
           </View>
           <View style={styles.detailItem}>
-            <Ionicons name="cash-outline" size={14} color="#8E8E93" />
-            <Text style={styles.detailText}>LKR {route.price}</Text>
+            <Ionicons name="cash-outline" size={14} color={icon} />
+            <Text style={[styles.detailText, { color: textSecondary }]}>LKR {route.price}</Text>
           </View>
         </View>
 
@@ -75,10 +77,10 @@ export default function RouteCard({ route, onPress }: RouteCardProps) {
         <Ionicons
           name={isFavourite ? 'heart' : 'heart-outline'}
           size={20}
-          color={isFavourite ? '#FF3B30' : '#8E8E93'}
+          color={isFavourite ? '#FF3B30' : icon}
         />
       </TouchableOpacity>
-      <Ionicons name="chevron-forward" size={20} color="#C7C7CC" style={styles.chevron} />
+      <Ionicons name="chevron-forward" size={20} color={icon} style={styles.chevron} />
     </TouchableOpacity>
   );
 }
@@ -87,7 +89,6 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -101,7 +102,6 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#F2F2F7',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -118,13 +118,11 @@ const styles = StyleSheet.create({
   from: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1C1C1E',
     flex: 1,
   },
   to: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1C1C1E',
     flex: 1,
   },
   details: {
@@ -138,7 +136,6 @@ const styles = StyleSheet.create({
   },
   detailText: {
     fontSize: 12,
-    color: '#8E8E93',
   },
   scenicBadge: {
     flexDirection: 'row',

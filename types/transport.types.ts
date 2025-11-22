@@ -38,6 +38,7 @@ export interface Schedule {
   trainName?: string;
   busNumber?: string;
   busType?: string;
+  frequency?: string;
   status: 'on-time' | 'delayed' | 'cancelled';
 }
 

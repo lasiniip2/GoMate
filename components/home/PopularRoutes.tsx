@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'rea
 import { useRouter } from 'expo-router';
 import { Route } from '@/types/transport.types';
 import RouteCard from './RouteCard';
+import { useAppTheme } from '@/hooks/use-app-theme';
 
 interface PopularRoutesProps {
   routes: Route[];
@@ -11,6 +12,7 @@ interface PopularRoutesProps {
 
 export default function PopularRoutes({ routes, loading }: PopularRoutesProps) {
   const router = useRouter();
+  const { text, primary } = useAppTheme();
 
   const handleRoutePress = (route: Route) => {
     router.push({
@@ -27,10 +29,10 @@ export default function PopularRoutes({ routes, loading }: PopularRoutesProps) {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Popular Routes</Text>
+          <Text style={[styles.title, { color: text }]}>Popular Routes</Text>
         </View>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#007AFF" />
+          <ActivityIndicator size="large" color={primary} />
         </View>
       </View>
     );
@@ -43,9 +45,9 @@ export default function PopularRoutes({ routes, loading }: PopularRoutesProps) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Popular Routes</Text>
+        <Text style={[styles.title, { color: text }]}>Popular Routes</Text>
         <TouchableOpacity onPress={handleViewAll}>
-          <Text style={styles.viewAll}>View All</Text>
+          <Text style={[styles.viewAll, { color: primary }]}>View All</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
@@ -75,12 +77,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#1C1C1E',
   },
   viewAll: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#007AFF',
   },
   content: {
     gap: 0,

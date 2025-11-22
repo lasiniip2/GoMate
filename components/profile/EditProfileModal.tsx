@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
+import { useAppTheme } from '@/hooks/use-app-theme';
 
 interface EditProfileModalProps {
   visible: boolean;
@@ -21,6 +22,7 @@ interface EditProfileModalProps {
 
 export default function EditProfileModal({ visible, onClose }: EditProfileModalProps) {
   const { user, updateProfile } = useAuth();
+  const { card, text, textSecondary, primary, backgroundSecondary, border, icon } = useAppTheme();
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
   const [phone, setPhone] = useState('');
@@ -45,16 +47,16 @@ export default function EditProfileModal({ visible, onClose }: EditProfileModalP
     }
 
     setLoading(true);
-    try {
-      await updateProfile({ name, email, phone });
-      Alert.alert('Success', 'Profile updated successfully', [
-        { text: 'OK', onPress: onClose }
-      ]);
-    } catch (error) {
-      Alert.alert('Error', 'Failed to update profile');
-    } finally {
-      setLoading(false);
-    }
+    // try {
+    //   await updateProfile({ name, email, phone });
+    //   Alert.alert('Success', 'Profile updated successfully', [
+    //     { text: 'OK', onPress: onClose }
+    //   ]);
+    // } catch (error) {
+    //   Alert.alert('Error', 'Failed to update profile');
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   const handleCancel = () => {
@@ -76,71 +78,71 @@ export default function EditProfileModal({ visible, onClose }: EditProfileModalP
         style={styles.container}
       >
         <View style={styles.overlay}>
-          <View style={styles.modal}>
-            <View style={styles.header}>
-              <Text style={styles.title}>Edit Profile</Text>
+          <View style={[styles.modal, { backgroundColor: card }]}>
+            <View style={[styles.header, { borderBottomColor: border }]}>
+              <Text style={[styles.title, { color: text }]}>Edit Profile</Text>
               <TouchableOpacity onPress={handleCancel} style={styles.closeButton}>
-                <Ionicons name="close" size={24} color="#1C1C1E" />
+                <Ionicons name="close" size={24} color={text} />
               </TouchableOpacity>
             </View>
 
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>Full Name</Text>
-                <View style={styles.inputContainer}>
-                  <Ionicons name="person-outline" size={20} color="#8E8E93" />
+                <Text style={[styles.label, { color: text }]}>Full Name</Text>
+                <View style={[styles.inputContainer, { backgroundColor: backgroundSecondary }]}>
+                  <Ionicons name="person-outline" size={20} color={icon} />
                   <TextInput
-                    style={styles.input}
+                    style={[styles.input, { color: text }]}
                     value={name}
                     onChangeText={setName}
                     placeholder="Enter your name"
-                    placeholderTextColor="#C7C7CC"
+                    placeholderTextColor={icon}
                   />
                 </View>
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>Email Address</Text>
-                <View style={styles.inputContainer}>
-                  <Ionicons name="mail-outline" size={20} color="#8E8E93" />
+                <Text style={[styles.label, { color: text }]}>Email Address</Text>
+                <View style={[styles.inputContainer, { backgroundColor: backgroundSecondary }]}>
+                  <Ionicons name="mail-outline" size={20} color={icon} />
                   <TextInput
-                    style={styles.input}
+                    style={[styles.input, { color: text }]}
                     value={email}
                     onChangeText={setEmail}
                     placeholder="Enter your email"
-                    placeholderTextColor="#C7C7CC"
+                    placeholderTextColor={icon}
                     keyboardType="email-address"
                     autoCapitalize="none"
                   />
                 </View>
               </View>
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Phone Number (Optional)</Text>
-                <View style={styles.inputContainer}>
-                  <Ionicons name="call-outline" size={20} color="#8E8E93" />
+              {/* <View style={styles.inputGroup}>
+                <Text style={[styles.label, { color: text }]}>Phone Number (Optional)</Text>
+                <View style={[styles.inputContainer, { backgroundColor: backgroundSecondary }]}>
+                  <Ionicons name="call-outline" size={20} color={icon} />
                   <TextInput
-                    style={styles.input}
+                    style={[styles.input, { color: text }]}
                     value={phone}
                     onChangeText={setPhone}
                     placeholder="Enter your phone number"
-                    placeholderTextColor="#C7C7CC"
+                    placeholderTextColor={icon}
                     keyboardType="phone-pad"
                   />
                 </View>
-              </View>
+              </View> */}
             </ScrollView>
 
-            <View style={styles.footer}>
+            <View style={[styles.footer, { borderTopColor: border }]}>
               <TouchableOpacity
-                style={styles.cancelButton}
+                style={[styles.cancelButton, { backgroundColor: backgroundSecondary }]}
                 onPress={handleCancel}
                 disabled={loading}
               >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
+                <Text style={[styles.cancelButtonText, { color: text }]}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.saveButton, loading && styles.saveButtonDisabled]}
+                style={[styles.saveButton, { backgroundColor: primary }, loading && styles.saveButtonDisabled]}
                 onPress={handleSave}
                 disabled={loading}
               >
@@ -166,7 +168,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modal: {
-    backgroundColor: '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: '80%',
@@ -179,12 +180,10 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
   },
   title: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1C1C1E',
   },
   closeButton: {
     width: 32,
@@ -201,13 +200,11 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1C1C1E',
     marginBottom: 8,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F2F2F7',
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 12,
@@ -215,7 +212,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    color: '#1C1C1E',
     marginLeft: 10,
   },
   footer: {
@@ -223,26 +219,22 @@ const styles = StyleSheet.create({
     padding: 20,
     gap: 12,
     borderTopWidth: 1,
-    borderTopColor: '#E5E5EA',
   },
   cancelButton: {
     flex: 1,
     paddingVertical: 14,
     borderRadius: 10,
-    backgroundColor: '#F2F2F7',
     alignItems: 'center',
     justifyContent: 'center',
   },
   cancelButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1C1C1E',
   },
   saveButton: {
     flex: 1,
     paddingVertical: 14,
     borderRadius: 10,
-    backgroundColor: '#007AFF',
     alignItems: 'center',
     justifyContent: 'center',
   },

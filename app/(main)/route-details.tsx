@@ -12,6 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { transportService } from '@/services/transportService';
 import { Route, Schedule } from '@/types/transport.types';
 import { useFavourites } from '@/context/FavouritesContext';
+import { useAppTheme } from '@/hooks/use-app-theme';
 
 export default function RouteDetailsScreen() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function RouteDetailsScreen() {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [loading, setLoading] = useState(true);
   const { isRouteFavourite, addRoute, removeRoute } = useFavourites();
+  const { background, card, text, textSecondary, primary, icon, success, backgroundSecondary } = useAppTheme();
 
   const isFavourite = route ? isRouteFavourite(route.id) : false;
 
@@ -69,18 +71,18 @@ export default function RouteDetailsScreen() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
+      <View style={[styles.loadingContainer, { backgroundColor: background }]}>
+        <ActivityIndicator size="large" color={primary} />
       </View>
     );
   }
 
   if (!route) {
     return (
-      <View style={styles.errorContainer}>
-        <Ionicons name="alert-circle-outline" size={64} color="#C7C7CC" />
-        <Text style={styles.errorText}>Route not found</Text>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+      <View style={[styles.errorContainer, { backgroundColor: background }]}>
+        <Ionicons name="alert-circle-outline" size={64} color={icon} />
+        <Text style={[styles.errorText, { color: textSecondary }]}>Route not found</Text>
+        <TouchableOpacity style={[styles.backButton, { backgroundColor: primary }]} onPress={() => router.back()}>
           <Text style={styles.backButtonText}>Go Back</Text>
         </TouchableOpacity>
       </View>
@@ -88,82 +90,82 @@ export default function RouteDetailsScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <View style={[styles.container, { backgroundColor: background }]}>
+      <View style={[styles.header, { backgroundColor: card }]}>
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#1C1C1E" />
+          <Ionicons name="arrow-back" size={24} color={text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Route Details</Text>
+        <Text style={[styles.headerTitle, { color: text }]}>Route Details</Text>
         <TouchableOpacity style={styles.favouriteHeaderBtn} onPress={handleFavouriteToggle}>
           <Ionicons
             name={isFavourite ? 'heart' : 'heart-outline'}
             size={24}
-            color={isFavourite ? '#FF3B30' : '#1C1C1E'}
+            color={isFavourite ? '#FF3B30' : icon}
           />
         </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.content}>
-          <View style={styles.routeHeader}>
-            <View style={styles.transportIconContainer}>
+          <View style={[styles.routeHeader, { backgroundColor: card }]}>
+            <View style={[styles.transportIconContainer, { backgroundColor: backgroundSecondary }]}>
               <Ionicons
                 name={getTransportIcon(route.transportMode)}
                 size={32}
-                color="#007AFF"
+                color={primary}
               />
             </View>
             <View style={styles.routeTitleContainer}>
-              <Text style={styles.transportMode}>{route.transportMode.toUpperCase()}</Text>
-              <Text style={styles.routeTitle}>
+              <Text style={[styles.transportMode, { color: primary }]}>{route.transportMode.toUpperCase()}</Text>
+              <Text style={[styles.routeTitle, { color: text }]}>
                 {route.from} → {route.to}
               </Text>
             </View>
             {route.scenic && (
-              <View style={styles.scenicBadge}>
-                <Ionicons name="eye" size={14} color="#34C759" />
-                <Text style={styles.scenicText}>Scenic</Text>
+              <View style={[styles.scenicBadge, { backgroundColor: success + '20' }]}>
+                <Ionicons name="eye" size={14} color={success} />
+                <Text style={[styles.scenicText, { color: success }]}>Scenic</Text>
               </View>
             )}
           </View>
 
           <View style={styles.infoGrid}>
-            <View style={styles.infoCard}>
-              <Ionicons name="time-outline" size={24} color="#007AFF" />
-              <Text style={styles.infoLabel}>Duration</Text>
-              <Text style={styles.infoValue}>{route.duration}</Text>
+            <View style={[styles.infoCard, { backgroundColor: card }]}>
+              <Ionicons name="time-outline" size={24} color={primary} />
+              <Text style={[styles.infoLabel, { color: textSecondary }]}>Duration</Text>
+              <Text style={[styles.infoValue, { color: text }]}>{route.duration}</Text>
             </View>
-            <View style={styles.infoCard}>
-              <Ionicons name="navigate-outline" size={24} color="#007AFF" />
-              <Text style={styles.infoLabel}>Distance</Text>
-              <Text style={styles.infoValue}>{route.distance}</Text>
+            <View style={[styles.infoCard, { backgroundColor: card }]}>
+              <Ionicons name="navigate-outline" size={24} color={primary} />
+              <Text style={[styles.infoLabel, { color: textSecondary }]}>Distance</Text>
+              <Text style={[styles.infoValue, { color: text }]}>{route.distance}</Text>
             </View>
-            <View style={styles.infoCard}>
-              <Ionicons name="cash-outline" size={24} color="#007AFF" />
-              <Text style={styles.infoLabel}>Price</Text>
-              <Text style={styles.infoValue}>LKR {route.price}</Text>
+            <View style={[styles.infoCard, { backgroundColor: card }]}>
+              <Ionicons name="cash-outline" size={24} color={primary} />
+              <Text style={[styles.infoLabel, { color: textSecondary }]}>Price</Text>
+              <Text style={[styles.infoValue, { color: text }]}>LKR {route.price}</Text>
             </View>
           </View>
 
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Ionicons name="location" size={20} color="#007AFF" />
-              <Text style={styles.sectionTitle}>Route Information</Text>
+              <Ionicons name="location" size={20} color={primary} />
+              <Text style={[styles.sectionTitle, { color: text }]}>Route Information</Text>
             </View>
-            <View style={styles.routePoints}>
+            <View style={[styles.routePoints, { backgroundColor: card }]}>
               <View style={styles.routePoint}>
-                <View style={styles.pointDot} />
+                <View style={[styles.pointDot, { backgroundColor: primary }]} />
                 <View style={styles.pointContent}>
-                  <Text style={styles.pointLabel}>From</Text>
-                  <Text style={styles.pointValue}>{route.from}</Text>
+                  <Text style={[styles.pointLabel, { color: textSecondary }]}>From</Text>
+                  <Text style={[styles.pointValue, { color: text }]}>{route.from}</Text>
                 </View>
               </View>
-              <View style={styles.routeLine} />
+              <View style={[styles.routeLine, { backgroundColor: primary }]} />
               <View style={styles.routePoint}>
-                <View style={styles.pointDot} />
+                <View style={[styles.pointDot, { backgroundColor: primary }]} />
                 <View style={styles.pointContent}>
-                  <Text style={styles.pointLabel}>To</Text>
-                  <Text style={styles.pointValue}>{route.to}</Text>
+                  <Text style={[styles.pointLabel, { color: textSecondary }]}>To</Text>
+                  <Text style={[styles.pointValue, { color: text }]}>{route.to}</Text>
                 </View>
               </View>
             </View>
@@ -172,25 +174,25 @@ export default function RouteDetailsScreen() {
           {schedules.length > 0 && (
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
-                <Ionicons name="calendar-outline" size={20} color="#007AFF" />
-                <Text style={styles.sectionTitle}>Schedules</Text>
+                <Ionicons name="calendar-outline" size={20} color={primary} />
+                <Text style={[styles.sectionTitle, { color: text }]}>Schedules</Text>
               </View>
               {schedules.map((schedule) => (
-                <View key={schedule.id} style={styles.scheduleCard}>
+                <View key={schedule.id} style={[styles.scheduleCard, { backgroundColor: card }]}>
                   <View style={styles.scheduleTime}>
                     <View style={styles.timeColumn}>
-                      <Text style={styles.timeLabel}>Departure</Text>
-                      <Text style={styles.timeValue}>{schedule.departureTime}</Text>
+                      <Text style={[styles.timeLabel, { color: textSecondary }]}>Departure</Text>
+                      <Text style={[styles.timeValue, { color: text }]}>{schedule.departureTime}</Text>
                     </View>
-                    <Ionicons name="arrow-forward" size={20} color="#8E8E93" />
+                    <Ionicons name="arrow-forward" size={20} color={icon} />
                     <View style={styles.timeColumn}>
-                      <Text style={styles.timeLabel}>Arrival</Text>
-                      <Text style={styles.timeValue}>{schedule.arrivalTime}</Text>
+                      <Text style={[styles.timeLabel, { color: textSecondary }]}>Arrival</Text>
+                      <Text style={[styles.timeValue, { color: text }]}>{schedule.arrivalTime}</Text>
                     </View>
                   </View>
-                  <View style={styles.frequencyContainer}>
-                    <Ionicons name="repeat-outline" size={16} color="#8E8E93" />
-                    <Text style={styles.frequencyText}>{schedule.frequency}</Text>
+                  <View style={[styles.frequencyContainer, { borderTopColor: backgroundSecondary }]}>
+                    <Ionicons name="repeat-outline" size={16} color={icon} />
+                    <Text style={[styles.frequencyText, { color: textSecondary }]}>{schedule.frequency}</Text>
                   </View>
                 </View>
               ))}
@@ -199,9 +201,9 @@ export default function RouteDetailsScreen() {
 
           {schedules.length === 0 && (
             <View style={styles.noSchedules}>
-              <Ionicons name="time-outline" size={48} color="#C7C7CC" />
-              <Text style={styles.noSchedulesText}>No schedules available</Text>
-              <Text style={styles.noSchedulesSubtext}>Check back later for schedule updates</Text>
+              <Ionicons name="time-outline" size={48} color={icon} />
+              <Text style={[styles.noSchedulesText, { color: textSecondary }]}>No schedules available</Text>
+              <Text style={[styles.noSchedulesSubtext, { color: icon }]}>Check back later for schedule updates</Text>
             </View>
           )}
         </View>
@@ -213,32 +215,27 @@ export default function RouteDetailsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F2F2F7',
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F2F2F7',
     padding: 20,
   },
   errorText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#8E8E93',
     marginTop: 16,
   },
   backButton: {
     marginTop: 24,
     paddingHorizontal: 24,
     paddingVertical: 12,
-    backgroundColor: '#007AFF',
     borderRadius: 8,
   },
   backButtonText: {
@@ -253,7 +250,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 50,
     paddingBottom: 16,
-    backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E5EA',
   },
@@ -266,7 +262,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#1C1C1E',
   },
   favouriteHeaderBtn: {
     width: 40,
@@ -281,7 +276,6 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   routeHeader: {
-    backgroundColor: '#fff',
     padding: 20,
     borderRadius: 16,
     marginBottom: 20,
@@ -295,7 +289,6 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#F2F2F7',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 12,
@@ -306,28 +299,24 @@ const styles = StyleSheet.create({
   transportMode: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#007AFF',
     marginBottom: 4,
     letterSpacing: 1,
   },
   routeTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1C1C1E',
   },
   scenicBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
     paddingVertical: 6,
-    backgroundColor: '#E5F7E7',
     borderRadius: 8,
     alignSelf: 'flex-start',
   },
   scenicText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#34C759',
     marginLeft: 4,
   },
   infoGrid: {
@@ -337,7 +326,6 @@ const styles = StyleSheet.create({
   },
   infoCard: {
     flex: 1,
-    backgroundColor: '#fff',
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
@@ -350,14 +338,12 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 12,
-    color: '#8E8E93',
     marginTop: 8,
     marginBottom: 4,
   },
   infoValue: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#1C1C1E',
   },
   section: {
     marginBottom: 24,
@@ -370,11 +356,9 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1C1C1E',
     marginLeft: 8,
   },
   routePoints: {
-    backgroundColor: '#fff',
     padding: 20,
     borderRadius: 12,
   },
@@ -386,7 +370,6 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#007AFF',
     marginRight: 12,
   },
   pointContent: {
@@ -394,23 +377,19 @@ const styles = StyleSheet.create({
   },
   pointLabel: {
     fontSize: 12,
-    color: '#8E8E93',
     marginBottom: 4,
   },
   pointValue: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1C1C1E',
   },
   routeLine: {
     width: 2,
     height: 24,
-    backgroundColor: '#007AFF',
     marginLeft: 5,
     marginVertical: 8,
   },
   scheduleCard: {
-    backgroundColor: '#fff',
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
@@ -431,24 +410,20 @@ const styles = StyleSheet.create({
   },
   timeLabel: {
     fontSize: 12,
-    color: '#8E8E93',
     marginBottom: 4,
   },
   timeValue: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1C1C1E',
   },
   frequencyContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#F2F2F7',
   },
   frequencyText: {
     fontSize: 14,
-    color: '#8E8E93',
     marginLeft: 6,
   },
   noSchedules: {
@@ -459,12 +434,10 @@ const styles = StyleSheet.create({
   noSchedulesText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#8E8E93',
     marginTop: 16,
   },
   noSchedulesSubtext: {
     fontSize: 14,
-    color: '#C7C7CC',
     marginTop: 8,
   },
 });

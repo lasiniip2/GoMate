@@ -82,6 +82,17 @@ export const transportService = {
     }
   },
 
+  // Get schedule by ID
+  getScheduleById: async (scheduleId: string): Promise<Schedule | null> => {
+    try {
+      const schedules = await apiClient.get<Schedule[]>('/schedules');
+      return schedules.find(s => s.id === scheduleId) || null;
+    } catch (error) {
+      console.error(`Error fetching schedule ${scheduleId}:`, error);
+      return null;
+    }
+  },
+
   // Save recent route (local storage)
   saveRecentRoute: async (route: Route): Promise<void> => {
     try {

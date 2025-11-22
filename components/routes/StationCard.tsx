@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BusStop, TrainStation } from '@/types/transport.types';
+import { useAppTheme } from '@/hooks/use-app-theme';
 
 interface StationCardProps {
   station: BusStop | TrainStation;
@@ -9,14 +10,16 @@ interface StationCardProps {
 }
 
 export default function StationCard({ station, type }: StationCardProps) {
+  const { card, text, textSecondary, backgroundSecondary, primary } = useAppTheme();
+  
   return (
-    <View style={styles.stationCard}>
-      <View style={styles.stationIconContainer}>
-        <Ionicons name={type} size={20} color="#007AFF" />
+    <View style={[styles.stationCard, { backgroundColor: card }]}>
+      <View style={[styles.stationIconContainer, { backgroundColor: backgroundSecondary }]}>
+        <Ionicons name={type} size={20} color={primary} />
       </View>
       <View style={styles.stationInfo}>
-        <Text style={styles.stationName}>{station.name}</Text>
-        <Text style={styles.stationDetails}>
+        <Text style={[styles.stationName, { color: text }]}>{station.name}</Text>
+        <Text style={[styles.stationDetails, { color: textSecondary }]}>
           {station.code} • {station.city}
         </Text>
       </View>
@@ -28,7 +31,6 @@ const styles = StyleSheet.create({
   stationCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 14,
     marginBottom: 10,
@@ -42,7 +44,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#F2F2F7',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -53,11 +54,9 @@ const styles = StyleSheet.create({
   stationName: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1C1C1E',
     marginBottom: 2,
   },
   stationDetails: {
     fontSize: 12,
-    color: '#8E8E93',
   },
 });

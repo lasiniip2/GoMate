@@ -7,6 +7,8 @@ import { useFavourites } from '@/context/FavouritesContext';
 import { transportService } from '@/services/transportService';
 import EditProfileModal from '@/components/profile/EditProfileModal';
 import ChangePasswordModal from '@/components/profile/ChangePasswordModal';
+import ThemeToggle from '@/components/profile/ThemeToggle';
+import { useThemeColor } from '@/hooks/use-theme-color';
 
 export default function ProfileScreen() {
   const { user, logout } = useAuth();
@@ -15,6 +17,15 @@ export default function ProfileScreen() {
   const [recentRoutesCount, setRecentRoutesCount] = useState(0);
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
+
+  // Theme colors
+  const backgroundColor = useThemeColor({}, 'background');
+  const textColor = useThemeColor({}, 'text');
+  const textSecondary = useThemeColor({}, 'textSecondary');
+  const cardBackground = useThemeColor({}, 'card');
+  const primaryColor = useThemeColor({}, 'primary');
+  const errorColor = useThemeColor({}, 'error');
+  const borderLight = useThemeColor({}, 'borderLight');
 
   useEffect(() => {
     loadRecentRoutes();
@@ -53,186 +64,172 @@ export default function ProfileScreen() {
 
   return (
     <>
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <ScrollView style={[styles.container, { backgroundColor }]} showsVerticalScrollIndicator={false}>
         <View style={styles.content}>
           {/* Profile Header */}
-          <View style={styles.profileHeader}>
-          <View style={styles.avatarContainer}>
-            <Ionicons name="person" size={48} color="#007AFF" />
+          <View style={[styles.profileHeader, { backgroundColor: cardBackground }]}>
+          <View style={[styles.avatarContainer, { backgroundColor: primaryColor + '20' }]}>
+            <Ionicons name="person" size={48} color={primaryColor} />
           </View>
-          <Text style={styles.userName}>{user?.name || 'User'}</Text>
-          <Text style={styles.userEmail}>{user?.email || 'user@example.com'}</Text>
-          <View style={styles.memberSince}>
-            <Ionicons name="calendar-outline" size={14} color="#8E8E93" />
-            <Text style={styles.memberSinceText}>Member since {getMemberSince()}</Text>
+          <Text style={[styles.userName, { color: textColor }]}>{user?.name || 'User'}</Text>
+          <Text style={[styles.userEmail, { color: textSecondary }]}>{user?.email || 'user@example.com'}</Text>
+          <View style={[styles.memberSince, { backgroundColor: backgroundColor }]}>
+            <Ionicons name="calendar-outline" size={14} color={textSecondary} />
+            <Text style={[styles.memberSinceText, { color: textSecondary }]}>Member since {getMemberSince()}</Text>
           </View>
         </View>
 
         {/* Stats Section */}
         <View style={styles.statsContainer}>
-          <View style={styles.statCard}>
+          <View style={[styles.statCard, { backgroundColor: cardBackground }]}>
             <Ionicons name="heart" size={24} color="#FF3B30" />
-            <Text style={styles.statNumber}>{favouriteDestinations.length}</Text>
-            <Text style={styles.statLabel}>Destinations</Text>
+            <Text style={[styles.statNumber, { color: textColor }]}>{favouriteDestinations.length}</Text>
+            <Text style={[styles.statLabel, { color: textSecondary }]}>Destinations</Text>
           </View>
-          <View style={styles.statCard}>
-            <Ionicons name="navigate" size={24} color="#007AFF" />
-            <Text style={styles.statNumber}>{favouriteRoutes.length}</Text>
-            <Text style={styles.statLabel}>Routes</Text>
+          <View style={[styles.statCard, { backgroundColor: cardBackground }]}>
+            <Ionicons name="navigate" size={24} color={primaryColor} />
+            <Text style={[styles.statNumber, { color: textColor }]}>{favouriteRoutes.length}</Text>
+            <Text style={[styles.statLabel, { color: textSecondary }]}>Routes</Text>
           </View>
-          <View style={styles.statCard}>
+          <View style={[styles.statCard, { backgroundColor: cardBackground }]}>
             <Ionicons name="time" size={24} color="#34C759" />
-            <Text style={styles.statNumber}>{recentRoutesCount}</Text>
-            <Text style={styles.statLabel}>Recent</Text>
+            <Text style={[styles.statNumber, { color: textColor }]}>{recentRoutesCount}</Text>
+            <Text style={[styles.statLabel, { color: textSecondary }]}>Recent</Text>
           </View>
         </View>
 
         {/* Account Settings */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Account Settings</Text>
+          <Text style={[styles.sectionTitle, { color: textColor }]}>Account Settings</Text>
           
           <TouchableOpacity 
-            style={styles.menuItem}
+            style={[styles.menuItem, { backgroundColor: cardBackground }]}
             onPress={() => setShowEditProfile(true)}
           >
             <View style={styles.menuLeft}>
-              <View style={styles.iconContainer}>
-                <Ionicons name="person-outline" size={22} color="#007AFF" />
+              <View style={[styles.iconContainer, { backgroundColor }]}>
+                <Ionicons name="person-outline" size={22} color={primaryColor} />
               </View>
               <View style={styles.menuTextContainer}>
-                <Text style={styles.menuText}>Edit Profile</Text>
-                <Text style={styles.menuSubtext}>Update your information</Text>
+                <Text style={[styles.menuText, { color: textColor }]}>Edit Profile</Text>
+                <Text style={[styles.menuSubtext, { color: textSecondary }]}>Update your information</Text>
               </View>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
+            <Ionicons name="chevron-forward" size={20} color={textSecondary} />
           </TouchableOpacity>
 
           <TouchableOpacity 
-            style={styles.menuItem}
+            style={[styles.menuItem, { backgroundColor: cardBackground }]}
             onPress={() => setShowChangePassword(true)}
           >
             <View style={styles.menuLeft}>
-              <View style={styles.iconContainer}>
-                <Ionicons name="lock-closed-outline" size={22} color="#007AFF" />
+              <View style={[styles.iconContainer, { backgroundColor }]}>
+                <Ionicons name="lock-closed-outline" size={22} color={primaryColor} />
               </View>
               <View style={styles.menuTextContainer}>
-                <Text style={styles.menuText}>Change Password</Text>
-                <Text style={styles.menuSubtext}>Update your password</Text>
+                <Text style={[styles.menuText, { color: textColor }]}>Change Password</Text>
+                <Text style={[styles.menuSubtext, { color: textSecondary }]}>Update your password</Text>
               </View>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
+            <Ionicons name="chevron-forward" size={20} color={textSecondary} />
           </TouchableOpacity>
         </View>
 
-        {/* Preferences */}
+        {/* Preferences with Theme Toggle */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Preferences</Text>
-          
-          <TouchableOpacity style={styles.menuItem}>
-            <View style={styles.menuLeft}>
-              <View style={styles.iconContainer}>
-                <Ionicons name="moon-outline" size={22} color="#007AFF" />
-              </View>
-              <View style={styles.menuTextContainer}>
-                <Text style={styles.menuText}>Dark Mode</Text>
-                <Text style={styles.menuSubtext}>Coming soon</Text>
-              </View>
-            </View>
-            <View style={styles.switchPlaceholder}>
-              <Text style={styles.switchText}>Off</Text>
-            </View>
-          </TouchableOpacity>
+          <Text style={[styles.sectionTitle, { color: textColor }]}>Preferences</Text>
+          <ThemeToggle />
         </View>
 
         {/* App Information */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>App Information</Text>
+          <Text style={[styles.sectionTitle, { color: textColor }]}>App Information</Text>
           
-          <View style={styles.infoCard}>
+          <View style={[styles.infoCard, { backgroundColor: cardBackground }]}>
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>App Name</Text>
-              <Text style={styles.infoValue}>GoMate</Text>
+              <Text style={[styles.infoLabel, { color: textSecondary }]}>App Name</Text>
+              <Text style={[styles.infoValue, { color: textColor }]}>GoMate</Text>
             </View>
-            <View style={styles.divider} />
+            <View style={[styles.divider, { backgroundColor: borderLight }]} />
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Version</Text>
-              <Text style={styles.infoValue}>1.0.0</Text>
+              <Text style={[styles.infoLabel, { color: textSecondary }]}>Version</Text>
+              <Text style={[styles.infoValue, { color: textColor }]}>1.0.0</Text>
             </View>
-            <View style={styles.divider} />
+            <View style={[styles.divider, { backgroundColor: borderLight }]} />
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Developer</Text>
-              <Text style={styles.infoValue}>GoMate Team</Text>
+              <Text style={[styles.infoLabel, { color: textSecondary }]}>Developer</Text>
+              <Text style={[styles.infoValue, { color: textColor }]}>GoMate Team</Text>
             </View>
-            <View style={styles.divider} />
+            <View style={[styles.divider, { backgroundColor: borderLight }]} />
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Build</Text>
-              <Text style={styles.infoValue}>2024.11</Text>
+              <Text style={[styles.infoLabel, { color: textSecondary }]}>Build</Text>
+              <Text style={[styles.infoValue, { color: textColor }]}>2024.11</Text>
             </View>
           </View>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={[styles.menuItem, { backgroundColor: cardBackground }]}>
             <View style={styles.menuLeft}>
-              <View style={styles.iconContainer}>
-                <Ionicons name="help-circle-outline" size={22} color="#007AFF" />
+              <View style={[styles.iconContainer, { backgroundColor }]}>
+                <Ionicons name="help-circle-outline" size={22} color={primaryColor} />
               </View>
               <View style={styles.menuTextContainer}>
-                <Text style={styles.menuText}>Help & Support</Text>
-                <Text style={styles.menuSubtext}>Get assistance</Text>
+                <Text style={[styles.menuText, { color: textColor }]}>Help & Support</Text>
+                <Text style={[styles.menuSubtext, { color: textSecondary }]}>Get assistance</Text>
               </View>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
+            <Ionicons name="chevron-forward" size={20} color={textSecondary} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={[styles.menuItem, { backgroundColor: cardBackground }]}>
             <View style={styles.menuLeft}>
-              <View style={styles.iconContainer}>
-                <Ionicons name="shield-checkmark-outline" size={22} color="#007AFF" />
+              <View style={[styles.iconContainer, { backgroundColor }]}>
+                <Ionicons name="shield-checkmark-outline" size={22} color={primaryColor} />
               </View>
               <View style={styles.menuTextContainer}>
-                <Text style={styles.menuText}>Privacy Policy</Text>
-                <Text style={styles.menuSubtext}>View our privacy policy</Text>
+                <Text style={[styles.menuText, { color: textColor }]}>Privacy Policy</Text>
+                <Text style={[styles.menuSubtext, { color: textSecondary }]}>View our privacy policy</Text>
               </View>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
+            <Ionicons name="chevron-forward" size={20} color={textSecondary} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={[styles.menuItem, { backgroundColor: cardBackground }]}>
             <View style={styles.menuLeft}>
-              <View style={styles.iconContainer}>
-                <Ionicons name="document-text-outline" size={22} color="#007AFF" />
+              <View style={[styles.iconContainer, { backgroundColor }]}>
+                <Ionicons name="document-text-outline" size={22} color={primaryColor} />
               </View>
               <View style={styles.menuTextContainer}>
-                <Text style={styles.menuText}>Terms of Service</Text>
-                <Text style={styles.menuSubtext}>Read terms and conditions</Text>
+                <Text style={[styles.menuText, { color: textColor }]}>Terms of Service</Text>
+                <Text style={[styles.menuSubtext, { color: textSecondary }]}>Read terms and conditions</Text>
               </View>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
+            <Ionicons name="chevron-forward" size={20} color={textSecondary} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={[styles.menuItem, { backgroundColor: cardBackground }]}>
             <View style={styles.menuLeft}>
-              <View style={styles.iconContainer}>
-                <Ionicons name="star-outline" size={22} color="#007AFF" />
+              <View style={[styles.iconContainer, { backgroundColor }]}>
+                <Ionicons name="star-outline" size={22} color={primaryColor} />
               </View>
               <View style={styles.menuTextContainer}>
-                <Text style={styles.menuText}>Rate App</Text>
-                <Text style={styles.menuSubtext}>Share your feedback</Text>
+                <Text style={[styles.menuText, { color: textColor }]}>Rate App</Text>
+                <Text style={[styles.menuSubtext, { color: textSecondary }]}>Share your feedback</Text>
               </View>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
+            <Ionicons name="chevron-forward" size={20} color={textSecondary} />
           </TouchableOpacity>
         </View>
 
         {/* Logout Button */}
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={22} color="#FF3B30" />
-          <Text style={styles.logoutText}>Logout</Text>
+        <TouchableOpacity style={[styles.logoutButton, { backgroundColor: cardBackground, borderColor: errorColor }]} onPress={handleLogout}>
+          <Ionicons name="log-out-outline" size={22} color={errorColor} />
+          <Text style={[styles.logoutText, { color: errorColor }]}>Logout</Text>
         </TouchableOpacity>
 
         {/* App Footer */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Made with ❤️ for Sri Lankan Travelers</Text>
-          <Text style={styles.footerCopyright}>© 2024 GoMate. All rights reserved.</Text>
+          <Text style={[styles.footerText, { color: textSecondary }]}>Made with ❤️ for Sri Lankan Travelers</Text>
+          <Text style={[styles.footerCopyright, { color: textSecondary }]}>© 2024 GoMate. All rights reserved.</Text>
         </View>
       </View>
     </ScrollView>
@@ -253,7 +250,6 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
   },
   content: {
     paddingBottom: 40,
@@ -262,7 +258,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 40,
     paddingHorizontal: 20,
-    backgroundColor: '#fff',
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,
     marginBottom: 20,
@@ -271,7 +266,6 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#E3F2FD',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
@@ -284,12 +278,10 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1C1C1E',
     marginBottom: 4,
   },
   userEmail: {
     fontSize: 16,
-    color: '#8E8E93',
     marginBottom: 12,
   },
   memberSince: {
@@ -298,12 +290,10 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    backgroundColor: '#F2F2F7',
     borderRadius: 12,
   },
   memberSinceText: {
     fontSize: 13,
-    color: '#8E8E93',
   },
   statsContainer: {
     flexDirection: 'row',
@@ -313,7 +303,6 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    backgroundColor: '#fff',
     borderRadius: 16,
     padding: 16,
     alignItems: 'center',
@@ -326,13 +315,11 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1C1C1E',
     marginTop: 8,
     marginBottom: 4,
   },
   statLabel: {
     fontSize: 12,
-    color: '#8E8E93',
   },
   section: {
     paddingHorizontal: 20,
@@ -341,14 +328,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1C1C1E',
     marginBottom: 12,
   },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#fff',
     padding: 16,
     borderRadius: 12,
     marginBottom: 8,
@@ -367,7 +352,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F2F2F7',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -378,26 +362,21 @@ const styles = StyleSheet.create({
   menuText: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#1C1C1E',
   },
   menuSubtext: {
     fontSize: 13,
-    color: '#8E8E93',
     marginTop: 2,
   },
   switchPlaceholder: {
     paddingHorizontal: 12,
     paddingVertical: 6,
-    backgroundColor: '#F2F2F7',
     borderRadius: 12,
   },
   switchText: {
     fontSize: 13,
-    color: '#8E8E93',
     fontWeight: '500',
   },
   infoCard: {
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
     marginBottom: 8,
@@ -415,34 +394,28 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 15,
-    color: '#8E8E93',
   },
   infoValue: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#1C1C1E',
   },
   divider: {
     height: 1,
-    backgroundColor: '#E5E5EA',
   },
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
     padding: 16,
     borderRadius: 12,
     marginHorizontal: 20,
     marginTop: 10,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#FF3B30',
   },
   logoutText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#FF3B30',
     marginLeft: 8,
   },
   footer: {
@@ -452,13 +425,11 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 14,
-    color: '#8E8E93',
     textAlign: 'center',
     marginBottom: 6,
   },
   footerCopyright: {
     fontSize: 12,
-    color: '#C7C7CC',
     textAlign: 'center',
   },
 });

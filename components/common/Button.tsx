@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
+import { useThemeColor } from '@/hooks/use-theme-color';
 
 interface ButtonProps {
   title: string;
@@ -20,13 +21,16 @@ export default function Button({
   style,
   textStyle,
 }: ButtonProps) {
+  const primaryColor = useThemeColor({}, 'primary');
+  const secondaryColor = useThemeColor({}, 'secondary');
+  const borderColor = useThemeColor({}, 'border');
   return (
     <TouchableOpacity
       style={[
         styles.button,
-        variant === 'primary' && styles.primaryButton,
-        variant === 'secondary' && styles.secondaryButton,
-        variant === 'outline' && styles.outlineButton,
+        variant === 'primary' && { backgroundColor: primaryColor },
+        variant === 'secondary' && { backgroundColor: secondaryColor },
+        variant === 'outline' && { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: primaryColor },
         (disabled || loading) && styles.disabledButton,
         style,
       ]}
@@ -35,14 +39,14 @@ export default function Button({
       activeOpacity={0.7}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'outline' ? '#007AFF' : '#fff'} />
+        <ActivityIndicator color={variant === 'outline' ? primaryColor : '#fff'} />
       ) : (
         <Text
           style={[
             styles.buttonText,
             variant === 'primary' && styles.primaryButtonText,
             variant === 'secondary' && styles.secondaryButtonText,
-            variant === 'outline' && styles.outlineButtonText,
+            variant === 'outline' && { color: primaryColor },
             textStyle,
           ]}
         >
@@ -62,17 +66,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 50,
   },
-  primaryButton: {
-    backgroundColor: '#007AFF',
-  },
-  secondaryButton: {
-    backgroundColor: '#5856D6',
-  },
-  outlineButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 1.5,
-    borderColor: '#007AFF',
-  },
   disabledButton: {
     opacity: 0.5,
   },
@@ -85,8 +78,5 @@ const styles = StyleSheet.create({
   },
   secondaryButtonText: {
     color: '#fff',
-  },
-  outlineButtonText: {
-    color: '#007AFF',
   },
 });

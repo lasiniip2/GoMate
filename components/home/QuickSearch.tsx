@@ -3,9 +3,12 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { ThemedView } from '@/components/themed-view';
+import { useThemeColor } from '@/hooks/use-theme-color';
 
 export default function QuickSearch() {
   const router = useRouter();
+  const backgroundColor = useThemeColor({}, 'backgroundSecondary');
+  const placeholderColor = useThemeColor({}, 'inputPlaceholder');
 
   const handlePress = () => {
     // Navigate to search tab - adjust path based on your routing structure
@@ -14,10 +17,10 @@ export default function QuickSearch() {
 
   return (
     <ThemedView style={styles.container}>
-      <TouchableOpacity style={styles.searchBox} onPress={handlePress} activeOpacity={0.7}>
-        <Ionicons name="search" size={20} color="#8E8E93" style={styles.icon} />
-        <Text style={styles.placeholder}>Search destinations or routes...</Text>
-        <Ionicons name="options-outline" size={20} color="#8E8E93" />
+      <TouchableOpacity style={[styles.searchBox, { backgroundColor }]} onPress={handlePress} activeOpacity={0.7}>
+        <Ionicons name="search" size={20} color={placeholderColor} style={styles.icon} />
+        <Text style={[styles.placeholder, { color: placeholderColor }]}>Search destinations or routes...</Text>
+        <Ionicons name="options-outline" size={20} color={placeholderColor} />
       </TouchableOpacity>
     </ThemedView>
   );
@@ -31,7 +34,6 @@ const styles = StyleSheet.create({
   searchBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F2F2F7',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -42,6 +44,5 @@ const styles = StyleSheet.create({
   placeholder: {
     flex: 1,
     fontSize: 16,
-    color: '#8E8E93',
   },
 });

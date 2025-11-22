@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { FavouriteSchedule } from '@/types/favourite.types';
 import { useFavourites } from '@/context/FavouritesContext';
+import { useAppTheme } from '@/hooks/use-app-theme';
 
 interface FavouriteSchedulesProps {
   favourites: FavouriteSchedule[];
@@ -10,6 +11,7 @@ interface FavouriteSchedulesProps {
 
 export default function FavouriteSchedules({ favourites }: FavouriteSchedulesProps) {
   const { removeSchedule } = useFavourites();
+  const { card, text, textSecondary, backgroundSecondary, primary, success, warning, error } = useAppTheme();
 
   const handleRemove = async (scheduleId: string) => {
     await removeSchedule(scheduleId);
@@ -32,34 +34,33 @@ export default function FavouriteSchedules({ favourites }: FavouriteSchedulesPro
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Schedules ({favourites.length})</Text>
+      <Text style={[styles.sectionTitle, { color: text }]}>Schedules ({favourites.length})</Text>
       {favourites.map(fav => (
-        <View key={fav.id} style={styles.card}>
-          <View style={styles.iconContainer}>
+        <View key={fav.id} style={[styles.card, { backgroundColor: card }]}>
+          <View style={[styles.iconContainer, { backgroundColor: backgroundSecondary }]}>
             <Ionicons
               name={getTransportIcon(fav.route.transportMode)}
               size={20}
-              color="#007AFF"
+              color={primary}
             />
           </View>
           <View style={styles.info}>
-            <Text style={styles.name}>
+            <Text style={[styles.name, { color: text }]}>
               {fav.schedule.trainName || fav.schedule.busNumber}
             </Text>
-            <Text style={styles.route}>{fav.route.name}</Text>
+            <Text style={[styles.route, { color: textSecondary }]}>{fav.route.name}</Text>
             <View style={styles.times}>
-              <Text style={styles.time}>Departs: {fav.schedule.departureTime}</Text>
-              <Text style={styles.time}>Arrives: {fav.schedule.arrivalTime}</Text>
+              <Text style={[styles.time, { color: textSecondary }]}>Departs: {fav.schedule.departureTime}</Text>
+              <Text style={[styles.time, { color: textSecondary }]}>Arrives: {fav.schedule.arrivalTime}</Text>
             </View>
           </View>
           <View
             style={[
               styles.statusBadge,
-              fav.schedule.status === 'delayed' && styles.statusDelayed,
-              fav.schedule.status === 'cancelled' && styles.statusCancelled,
+              { backgroundColor: fav.schedule.status === 'on-time' ? success + '20' : fav.schedule.status === 'delayed' ? warning + '20' : error + '20' }
             ]}
           >
-            <Text style={styles.statusText}>
+            <Text style={[styles.statusText, { color: fav.schedule.status === 'on-time' ? success : fav.schedule.status === 'delayed' ? warning : error }]}>
               {fav.schedule.status === 'on-time'
                 ? 'On Time'
                 : fav.schedule.status === 'delayed'
@@ -86,13 +87,11 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1C1C1E',
     marginBottom: 12,
   },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 14,
     marginBottom: 12,
@@ -106,7 +105,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F2F2F7',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -117,12 +115,10 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1C1C1E',
     marginBottom: 2,
   },
   route: {
     fontSize: 12,
-    color: '#8E8E93',
     marginBottom: 6,
   },
   times: {
@@ -131,25 +127,16 @@ const styles = StyleSheet.create({
   },
   time: {
     fontSize: 11,
-    color: '#8E8E93',
   },
   statusBadge: {
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
-    backgroundColor: '#E8F5E9',
     marginRight: 8,
-  },
-  statusDelayed: {
-    backgroundColor: '#FFF3E0',
-  },
-  statusCancelled: {
-    backgroundColor: '#FFEBEE',
   },
   statusText: {
     fontSize: 10,
     fontWeight: '600',
-    color: '#34C759',
   },
   removeButton: {
     padding: 6,

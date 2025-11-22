@@ -11,12 +11,14 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { transportService } from '@/services/transportService';
 import { Schedule } from '@/types/transport.types';
+import { useAppTheme } from '@/hooks/use-app-theme';
 
 export default function ScheduleDetailsScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const [schedule, setSchedule] = useState<Schedule | null>(null);
   const [loading, setLoading] = useState(true);
+  const { background, card, text, textSecondary, primary, icon, success, warning, error } = useAppTheme();
 
   useEffect(() => {
     loadScheduleData();
@@ -48,18 +50,18 @@ export default function ScheduleDetailsScreen() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
+      <View style={[styles.loadingContainer, { backgroundColor: background }]}>
+        <ActivityIndicator size="large" color={primary} />
       </View>
     );
   }
 
   if (!schedule) {
     return (
-      <View style={styles.errorContainer}>
-        <Ionicons name="alert-circle-outline" size={64} color="#C7C7CC" />
-        <Text style={styles.errorText}>Schedule not found</Text>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+      <View style={[styles.errorContainer, { backgroundColor: background }]}>
+        <Ionicons name="alert-circle-outline" size={64} color={icon} />
+        <Text style={[styles.errorText, { color: textSecondary }]}>Schedule not found</Text>
+        <TouchableOpacity style={[styles.backButton, { backgroundColor: primary }]} onPress={() => router.back()}>
           <Text style={styles.backButtonText}>Go Back</Text>
         </TouchableOpacity>
       </View>
@@ -67,18 +69,18 @@ export default function ScheduleDetailsScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <View style={[styles.container, { backgroundColor: background }]}>
+      <View style={[styles.header, { backgroundColor: card }]}>
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#1C1C1E" />
+          <Ionicons name="arrow-back" size={24} color={text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Schedule Details</Text>
+        <Text style={[styles.headerTitle, { color: text }]}>Schedule Details</Text>
         <View style={{ width: 40 }} />
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.content}>
-          <View style={styles.statusCard}>
+          <View style={[styles.statusCard, { backgroundColor: card }]}>
             <View
               style={[
                 styles.statusIndicator,
@@ -91,51 +93,51 @@ export default function ScheduleDetailsScreen() {
           </View>
 
           {schedule.trainNumber && (
-            <View style={styles.vehicleCard}>
-              <Ionicons name="train" size={32} color="#007AFF" />
+            <View style={[styles.vehicleCard, { backgroundColor: card }]}>
+              <Ionicons name="train" size={32} color={primary} />
               <View style={styles.vehicleInfo}>
-                <Text style={styles.vehicleLabel}>Train Number</Text>
-                <Text style={styles.vehicleNumber}>{schedule.trainNumber}</Text>
+                <Text style={[styles.vehicleLabel, { color: textSecondary }]}>Train Number</Text>
+                <Text style={[styles.vehicleNumber, { color: text }]}>{schedule.trainNumber}</Text>
                 {schedule.trainName && (
-                  <Text style={styles.vehicleName}>{schedule.trainName}</Text>
+                  <Text style={[styles.vehicleName, { color: primary }]}>{schedule.trainName}</Text>
                 )}
               </View>
             </View>
           )}
 
           {schedule.busNumber && (
-            <View style={styles.vehicleCard}>
-              <Ionicons name="bus" size={32} color="#007AFF" />
+            <View style={[styles.vehicleCard, { backgroundColor: card }]}>
+              <Ionicons name="bus" size={32} color={primary} />
               <View style={styles.vehicleInfo}>
-                <Text style={styles.vehicleLabel}>Bus Number</Text>
-                <Text style={styles.vehicleNumber}>{schedule.busNumber}</Text>
+                <Text style={[styles.vehicleLabel, { color: textSecondary }]}>Bus Number</Text>
+                <Text style={[styles.vehicleNumber, { color: text }]}>{schedule.busNumber}</Text>
                 {schedule.busType && (
-                  <Text style={styles.vehicleName}>{schedule.busType} Class</Text>
+                  <Text style={[styles.vehicleName, { color: primary }]}>{schedule.busType} Class</Text>
                 )}
               </View>
             </View>
           )}
 
           <View style={styles.timeSection}>
-            <View style={styles.timeCard}>
-              <Ionicons name="log-out-outline" size={24} color="#34C759" />
-              <Text style={styles.timeLabel}>Departure</Text>
-              <Text style={styles.timeValue}>{schedule.departureTime}</Text>
+            <View style={[styles.timeCard, { backgroundColor: card }]}>
+              <Ionicons name="log-out-outline" size={24} color={success} />
+              <Text style={[styles.timeLabel, { color: textSecondary }]}>Departure</Text>
+              <Text style={[styles.timeValue, { color: text }]}>{schedule.departureTime}</Text>
             </View>
             <View style={styles.timeArrow}>
-              <Ionicons name="arrow-forward" size={24} color="#C7C7CC" />
+              <Ionicons name="arrow-forward" size={24} color={icon} />
             </View>
-            <View style={styles.timeCard}>
-              <Ionicons name="log-in-outline" size={24} color="#FF3B30" />
-              <Text style={styles.timeLabel}>Arrival</Text>
-              <Text style={styles.timeValue}>{schedule.arrivalTime}</Text>
+            <View style={[styles.timeCard, { backgroundColor: card }]}>
+              <Ionicons name="log-in-outline" size={24} color={error} />
+              <Text style={[styles.timeLabel, { color: textSecondary }]}>Arrival</Text>
+              <Text style={[styles.timeValue, { color: text }]}>{schedule.arrivalTime}</Text>
             </View>
           </View>
 
           <View style={styles.infoSection}>
-            <Text style={styles.sectionTitle}>Route Information</Text>
+            <Text style={[styles.sectionTitle, { color: text }]}>Route Information</Text>
             <TouchableOpacity
-              style={styles.routeButton}
+              style={[styles.routeButton, { backgroundColor: card }]}
               onPress={() => {
                 router.push({
                   pathname: '/(main)/route-details',
@@ -144,10 +146,10 @@ export default function ScheduleDetailsScreen() {
               }}
             >
               <View style={styles.routeButtonContent}>
-                <Ionicons name="navigate-circle" size={24} color="#007AFF" />
-                <Text style={styles.routeButtonText}>View Full Route Details</Text>
+                <Ionicons name="navigate-circle" size={24} color={primary} />
+                <Text style={[styles.routeButtonText, { color: primary }]}>View Full Route Details</Text>
               </View>
-              <Ionicons name="chevron-forward" size={24} color="#C7C7CC" />
+              <Ionicons name="chevron-forward" size={24} color={icon} />
             </TouchableOpacity>
           </View>
         </View>
@@ -159,7 +161,6 @@ export default function ScheduleDetailsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
   },
   header: {
     flexDirection: 'row',
@@ -168,7 +169,6 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 20,
     paddingBottom: 16,
-    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderBottomColor: '#E5E5EA',
   },
@@ -176,14 +176,12 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F2F2F7',
     alignItems: 'center',
     justifyContent: 'center',
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1C1C1E',
   },
   scrollView: {
     flex: 1,
@@ -195,23 +193,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F2F2F7',
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F2F2F7',
     padding: 20,
   },
   errorText: {
     fontSize: 18,
-    color: '#8E8E93',
     marginTop: 16,
     marginBottom: 24,
   },
   backButton: {
-    backgroundColor: '#007AFF',
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 12,
@@ -224,7 +218,6 @@ const styles = StyleSheet.create({
   statusCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
     padding: 20,
     borderRadius: 16,
     marginBottom: 16,
@@ -242,7 +235,6 @@ const styles = StyleSheet.create({
   vehicleCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
     padding: 20,
     borderRadius: 16,
     marginBottom: 16,
@@ -253,18 +245,15 @@ const styles = StyleSheet.create({
   },
   vehicleLabel: {
     fontSize: 14,
-    color: '#8E8E93',
     marginBottom: 4,
   },
   vehicleNumber: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#1C1C1E',
     marginBottom: 4,
   },
   vehicleName: {
     fontSize: 16,
-    color: '#007AFF',
     fontWeight: '500',
   },
   timeSection: {
@@ -275,7 +264,6 @@ const styles = StyleSheet.create({
   },
   timeCard: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
     padding: 20,
     borderRadius: 16,
     alignItems: 'center',
@@ -285,14 +273,12 @@ const styles = StyleSheet.create({
   },
   timeLabel: {
     fontSize: 14,
-    color: '#8E8E93',
     marginTop: 8,
     marginBottom: 4,
   },
   timeValue: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1C1C1E',
   },
   infoSection: {
     marginTop: 8,
@@ -300,14 +286,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1C1C1E',
     marginBottom: 16,
   },
   routeButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#FFFFFF',
     padding: 20,
     borderRadius: 16,
   },
@@ -319,7 +303,6 @@ const styles = StyleSheet.create({
   routeButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#007AFF',
     marginLeft: 12,
   },
 });

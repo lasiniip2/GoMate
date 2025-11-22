@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Destination } from '@/types/destination.types';
 import DestinationCard from './DestinationCard';
+import { useAppTheme } from '@/hooks/use-app-theme';
 
 interface SuggestedDestinationsProps {
   destinations: Destination[];
@@ -24,6 +25,7 @@ const CATEGORIES = [
 export default function SuggestedDestinations({ destinations, loading }: SuggestedDestinationsProps) {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const { background, text, backgroundSecondary, primary } = useAppTheme();
 
   const handleDestinationPress = (destination: Destination) => {
     router.push({
@@ -35,9 +37,9 @@ export default function SuggestedDestinations({ destinations, loading }: Suggest
   if (loading) {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Explore Sri Lanka</Text>
+        <Text style={[styles.title, { color: text }]}>Explore Sri Lanka</Text>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#007AFF" />
+          <ActivityIndicator size="large" color={primary} />
         </View>
       </View>
     );
@@ -55,7 +57,7 @@ export default function SuggestedDestinations({ destinations, loading }: Suggest
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Explore Sri Lanka</Text>
+      <Text style={[styles.title, { color: text }]}>Explore Sri Lanka</Text>
       
       <View style={styles.categoriesContainer}>
         <ScrollView
@@ -68,7 +70,8 @@ export default function SuggestedDestinations({ destinations, loading }: Suggest
               key={category.id}
               style={[
                 styles.categoryChip,
-                selectedCategory === category.id && styles.categoryChipActive,
+                { backgroundColor: backgroundSecondary },
+                selectedCategory === category.id && { backgroundColor: primary },
               ]}
               onPress={() => setSelectedCategory(category.id)}
               activeOpacity={0.7}
@@ -76,12 +79,12 @@ export default function SuggestedDestinations({ destinations, loading }: Suggest
               <Ionicons
                 name={category.icon}
                 size={18}
-                color={selectedCategory === category.id ? '#fff' : '#007AFF'}
+                color={selectedCategory === category.id ? '#fff' : primary}
               />
               <Text
                 style={[
                   styles.categoryText,
-                  selectedCategory === category.id && styles.categoryTextActive,
+                  { color: selectedCategory === category.id ? '#fff' : primary },
                 ]}
               >
                 {category.label}
@@ -105,9 +108,9 @@ export default function SuggestedDestinations({ destinations, loading }: Suggest
 
       {filteredDestinations.length === 0 && (
         <View style={styles.emptyContainer}>
-          <Ionicons name="search-outline" size={48} color="#C7C7CC" />
-          <Text style={styles.emptyText}>No destinations found</Text>
-          <Text style={styles.emptySubtext}>Try selecting a different category</Text>
+          <Ionicons name="search-outline" size={48} color={primary} />
+          <Text style={[styles.emptyText, { color: text }]}>No destinations found</Text>
+          <Text style={[styles.emptySubtext, { color: text }]}>Try selecting a different category</Text>
         </View>
       )}
     </View>
@@ -122,7 +125,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#1C1C1E',
     marginBottom: 16,
   },
   categoriesContainer: {
@@ -140,23 +142,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#F2F2F7',
     marginRight: 8,
-    borderWidth: 1,
-    borderColor: '#E5E5EA',
-  },
-  categoryChipActive: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
   },
   categoryText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#007AFF',
     marginLeft: 6,
-  },
-  categoryTextActive: {
-    color: '#fff',
   },
   gridContainer: {
     flexDirection: 'row',
@@ -180,12 +171,10 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#8E8E93',
     marginTop: 12,
   },
   emptySubtext: {
     fontSize: 14,
-    color: '#C7C7CC',
     marginTop: 4,
   },
 });

@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useThemeColor } from '@/hooks/use-theme-color';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -26,16 +27,28 @@ export default function Input({
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
+  const textColor = useThemeColor({}, 'text');
+  const backgroundColor = useThemeColor({}, 'input');
+  const borderColor = useThemeColor({}, 'inputBorder');
+  const placeholderColor = useThemeColor({}, 'inputPlaceholder');
+  const primaryColor = useThemeColor({}, 'primary');
+  const errorColor = useThemeColor({}, 'error');
+
   return (
     <View style={styles.container}>
-      {label && <Text style={styles.label}>{label}</Text>}
-      <View style={[styles.inputContainer, isFocused && styles.inputFocused, error && styles.inputError]}>
+      {label && <Text style={[styles.label, { color: textColor }]}>{label}</Text>}
+      <View style={[
+        styles.inputContainer,
+        { backgroundColor, borderColor },
+        isFocused && { borderColor: primaryColor, backgroundColor },
+        error && { borderColor: errorColor },
+      ]}>
         {icon && (
-          <Ionicons name={icon} size={20} color={error ? '#FF3B30' : '#8E8E93'} style={styles.icon} />
+          <Ionicons name={icon} size={20} color={error ? errorColor : placeholderColor} style={styles.icon} />
         )}
         <TextInput
-          style={styles.input}
-          placeholderTextColor="#8E8E93"
+          style={[styles.input, { color: textColor }]}
+          placeholderTextColor={placeholderColor}
           secureTextEntry={secureTextEntry && !isPasswordVisible}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
@@ -49,12 +62,12 @@ export default function Input({
             <Ionicons
               name={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
               size={20}
-              color="#8E8E93"
+              color={placeholderColor}
             />
           </TouchableOpacity>
         )}
       </View>
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {error && <Text style={[styles.errorText, { color: errorColor }]}>{error}</Text>}
     </View>
   );
 }
@@ -66,30 +79,19 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1C1C1E',
     marginBottom: 8,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F2F2F7',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'transparent',
     paddingHorizontal: 12,
-  },
-  inputFocused: {
-    borderColor: '#007AFF',
-    backgroundColor: '#fff',
-  },
-  inputError: {
-    borderColor: '#FF3B30',
   },
   input: {
     flex: 1,
     paddingVertical: 14,
     fontSize: 16,
-    color: '#1C1C1E',
   },
   icon: {
     marginRight: 8,
@@ -99,7 +101,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 12,
-    color: '#FF3B30',
     marginTop: 4,
     marginLeft: 4,
   },

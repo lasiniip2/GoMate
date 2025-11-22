@@ -16,6 +16,7 @@ import RoutesList from '@/components/routes/RoutesList';
 import ScheduleCard from '@/components/routes/ScheduleCard';
 import TransportModeSelector from '@/components/routes/TransportModeSelector';
 import NearbyStations from '@/components/routes/NearbyStations';
+import { useAppTheme } from '@/hooks/use-app-theme';
 
 type TransportFilter = 'all' | 'train' | 'bus';
 
@@ -28,6 +29,8 @@ export default function RoutesScreen() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<TransportFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
+
+  const { background, card, text, textSecondary, borderLight, icon, primary } = useAppTheme();
 
   useEffect(() => {
     loadData();
@@ -88,9 +91,9 @@ export default function RoutesScreen() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>Loading routes...</Text>
+      <View style={[styles.loadingContainer, { backgroundColor: background }]}>
+        <ActivityIndicator size="large" color={primary} />
+        <Text style={[styles.loadingText, { color: textSecondary }]}>Loading routes...</Text>
       </View>
     );
   }
@@ -99,19 +102,19 @@ export default function RoutesScreen() {
   const upcomingSchedules = getUpcomingSchedules();
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Routes & Schedules</Text>
-        <Text style={styles.headerSubtitle}>Browse transport options</Text>
+    <View style={[styles.container, { backgroundColor: background }]}>
+      <View style={[styles.header, { backgroundColor: card, borderBottomColor: borderLight }]}>
+        <Text style={[styles.headerTitle, { color: text }]}>Routes & Schedules</Text>
+        <Text style={[styles.headerSubtitle, { color: textSecondary }]}>Browse transport options</Text>
       </View>
 
-      <View style={styles.searchContainer}>
-        <View style={styles.searchBar}>
-          <Ionicons name="search" size={20} color="#8E8E93" style={styles.searchIcon} />
+      <View style={[styles.searchContainer, { backgroundColor: background }]}>
+        <View style={[styles.searchBar, { backgroundColor: card, borderColor: borderLight }]}>
+          <Ionicons name="search" size={20} color={icon} style={styles.searchIcon} />
           <TextInput
-            style={styles.searchInput}
+            style={[styles.searchInput, { color: text }]}
             placeholder="Search routes..."
-            placeholderTextColor="#8E8E93"
+            placeholderTextColor={textSecondary}
             value={searchQuery}
             onChangeText={setSearchQuery}
             autoCapitalize="none"
@@ -119,7 +122,7 @@ export default function RoutesScreen() {
           />
           {searchQuery.length > 0 && (
             <TouchableOpacity onPress={() => setSearchQuery('')}>
-              <Ionicons name="close-circle" size={20} color="#8E8E93" />
+              <Ionicons name="close-circle" size={20} color={icon} />
             </TouchableOpacity>
           )}
         </View>
@@ -130,7 +133,7 @@ export default function RoutesScreen() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Routes Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>
+          <Text style={[styles.sectionTitle, { color: text }]}>
             Available Routes ({filteredRoutes.length})
           </Text>
           <RoutesList routes={filteredRoutes} onRoutePress={handleRoutePress} />
@@ -139,7 +142,7 @@ export default function RoutesScreen() {
         {/* Upcoming Schedules Section */}
         {upcomingSchedules.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Upcoming Departures</Text>
+            <Text style={[styles.sectionTitle, { color: text }]}>Upcoming Departures</Text>
             {upcomingSchedules.map(schedule => {
               const route = routes.find(r => r.id === schedule.routeId);
               if (!route) return null;
@@ -150,7 +153,7 @@ export default function RoutesScreen() {
 
         {/* Nearby Stations Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Nearby Stations</Text>
+          <Text style={[styles.sectionTitle, { color: text }]}>Nearby Stations</Text>
           <NearbyStations trainStations={trainStations} busStops={busStops} />
         </View>
       </ScrollView>
@@ -161,46 +164,38 @@ export default function RoutesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F2F2F7',
   },
   loadingText: {
     marginTop: 12,
     fontSize: 16,
-    color: '#8E8E93',
   },
   header: {
     paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 10,
-    backgroundColor: '#fff',
   },
   headerTitle: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#1C1C1E',
   },
   headerSubtitle: {
     fontSize: 16,
-    color: '#8E8E93',
     marginTop: 4,
   },
   searchContainer: {
     paddingHorizontal: 20,
     paddingVertical: 12,
-    backgroundColor: '#fff',
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
+    borderBottomColor: 'transparent',
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F2F2F7',
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 10,
@@ -211,7 +206,6 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: '#1C1C1E',
   },
   content: {
     flex: 1,
@@ -222,7 +216,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#1C1C1E',
     marginBottom: 16,
   },
 });

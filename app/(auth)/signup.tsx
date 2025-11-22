@@ -14,6 +14,7 @@ import { useAuth } from '@/context/AuthContext';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
 import { validateSignupForm } from '@/utils/validation';
+import { useThemeColor } from '@/hooks/use-theme-color';
 
 export default function SignupScreen() {
   const router = useRouter();
@@ -24,6 +25,11 @@ export default function SignupScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
+
+  const backgroundColor = useThemeColor({}, 'background');
+  const textColor = useThemeColor({}, 'text');
+  const textSecondary = useThemeColor({}, 'textSecondary');
+  const primaryColor = useThemeColor({}, 'primary');
 
   const handleSignup = async () => {
     // Validate form
@@ -57,15 +63,15 @@ export default function SignupScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
+      style={[styles.container, { backgroundColor }]}
     >
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.header}>
-          <Text style={styles.title}>Create Account</Text>
-          <Text style={styles.subtitle}>Sign up to get started with GoMate</Text>
+          <Text style={[styles.title, { color: textColor }]}>Create Account</Text>
+          <Text style={[styles.subtitle, { color: textSecondary }]}>Sign up to get started with GoMate</Text>
         </View>
 
         <View style={styles.form}>
@@ -129,9 +135,9 @@ export default function SignupScreen() {
           />
 
           <View style={styles.loginContainer}>
-            <Text style={styles.loginText}>Already have an account? </Text>
+            <Text style={[styles.loginText, { color: textSecondary }]}>Already have an account? </Text>
             <TouchableOpacity onPress={() => router.back()}>
-              <Text style={styles.loginLink}>Sign In</Text>
+              <Text style={[styles.loginLink, { color: primaryColor }]}>Sign In</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -143,7 +149,6 @@ export default function SignupScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   scrollContent: {
     flexGrow: 1,
@@ -156,12 +161,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#1C1C1E',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#8E8E93',
   },
   form: {
     width: '100%',
@@ -176,11 +179,9 @@ const styles = StyleSheet.create({
   },
   loginText: {
     fontSize: 14,
-    color: '#8E8E93',
   },
   loginLink: {
     fontSize: 14,
-    color: '#007AFF',
     fontWeight: '600',
   },
 });

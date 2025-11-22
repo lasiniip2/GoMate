@@ -15,6 +15,7 @@ import { transportService } from '@/services/transportService';
 import { Destination } from '@/types/destination.types';
 import { Route } from '@/types/transport.types';
 import { useFavourites } from '@/context/FavouritesContext';
+import { useAppTheme } from '@/hooks/use-app-theme';
 
 export default function DestinationDetailsScreen() {
   const router = useRouter();
@@ -23,6 +24,7 @@ export default function DestinationDetailsScreen() {
   const [routes, setRoutes] = useState<Route[]>([]);
   const [loading, setLoading] = useState(true);
   const { isDestinationFavourite, addDestination, removeDestination } = useFavourites();
+  const { background, card, text, textSecondary, primary, icon, success, warning, backgroundSecondary } = useAppTheme();
 
   const isFavourite = destination ? isDestinationFavourite(destination.id) : false;
 
@@ -103,18 +105,18 @@ export default function DestinationDetailsScreen() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
+      <View style={[styles.loadingContainer, { backgroundColor: background }]}>
+        <ActivityIndicator size="large" color={primary} />
       </View>
     );
   }
 
   if (!destination) {
     return (
-      <View style={styles.errorContainer}>
-        <Ionicons name="alert-circle-outline" size={64} color="#C7C7CC" />
-        <Text style={styles.errorText}>Destination not found</Text>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+      <View style={[styles.errorContainer, { backgroundColor: background }]}>
+        <Ionicons name="alert-circle-outline" size={64} color={icon} />
+        <Text style={[styles.errorText, { color: textSecondary }]}>Destination not found</Text>
+        <TouchableOpacity style={[styles.backButton, { backgroundColor: primary }]} onPress={() => router.back()}>
           <Text style={styles.backButtonText}>Go Back</Text>
         </TouchableOpacity>
       </View>
@@ -122,27 +124,27 @@ export default function DestinationDetailsScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: background }]}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.imageContainer}>
           <Image source={{ uri: destination.image }} style={styles.image} />
           <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-            <Ionicons name="arrow-back" size={24} color="#1C1C1E" />
+            <Ionicons name="arrow-back" size={24} color={text} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.favouriteBtn} onPress={handleFavouriteToggle}>
             <Ionicons
               name={isFavourite ? 'heart' : 'heart-outline'}
               size={28}
-              color={isFavourite ? '#FF3B30' : '#8E8E93'}
+              color={isFavourite ? '#FF3B30' : icon}
             />
           </TouchableOpacity>
           <View style={styles.imageOverlay} />
         </View>
 
-        <View style={styles.content}>
+        <View style={[styles.content, { backgroundColor: background }]}>
           <View style={styles.header}>
             <View style={styles.titleContainer}>
-              <Text style={styles.title}>{destination.name}</Text>
+              <Text style={[styles.title, { color: text }]}>{destination.name}</Text>
               {destination.popular && (
                 <View style={styles.popularBadge}>
                   <Ionicons name="flame" size={14} color="#FF3B30" />
@@ -152,53 +154,53 @@ export default function DestinationDetailsScreen() {
             </View>
             <View style={styles.ratingContainer}>
               <Ionicons name="star" size={20} color="#FFD700" />
-              <Text style={styles.ratingText}>{destination.rating.toFixed(1)}</Text>
+              <Text style={[styles.ratingText, { color: text }]}>{destination.rating.toFixed(1)}</Text>
             </View>
           </View>
 
-          <View style={styles.categoryContainer}>
-            <Ionicons name="pricetag" size={16} color="#007AFF" />
-            <Text style={styles.category}>{destination.category}</Text>
+          <View style={[styles.categoryContainer, { backgroundColor: primary + '20' }]}>
+            <Ionicons name="pricetag" size={16} color={primary} />
+            <Text style={[styles.category, { color: primary }]}>{destination.category}</Text>
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>About</Text>
-            <Text style={styles.description}>
+            <Text style={[styles.sectionTitle, { color: text }]}>About</Text>
+            <Text style={[styles.description, { color: textSecondary }]}>
               {destination.longDescription || destination.description}
             </Text>
           </View>
 
           {destination.entryFee && (
-            <View style={styles.infoCard}>
+            <View style={[styles.infoCard, { backgroundColor: card }]}>
               <View style={styles.infoRow}>
-                <Ionicons name="cash-outline" size={20} color="#007AFF" />
+                <Ionicons name="cash-outline" size={20} color={primary} />
                 <View style={styles.infoContent}>
-                  <Text style={styles.infoLabel}>Entry Fee</Text>
-                  <Text style={styles.infoText}>{destination.entryFee}</Text>
+                  <Text style={[styles.infoLabel, { color: text }]}>Entry Fee</Text>
+                  <Text style={[styles.infoText, { color: textSecondary }]}>{destination.entryFee}</Text>
                 </View>
               </View>
             </View>
           )}
 
           {destination.openingHours && (
-            <View style={styles.infoCard}>
+            <View style={[styles.infoCard, { backgroundColor: card }]}>
               <View style={styles.infoRow}>
-                <Ionicons name="time-outline" size={20} color="#007AFF" />
+                <Ionicons name="time-outline" size={20} color={primary} />
                 <View style={styles.infoContent}>
-                  <Text style={styles.infoLabel}>Opening Hours</Text>
-                  <Text style={styles.infoText}>{destination.openingHours}</Text>
+                  <Text style={[styles.infoLabel, { color: text }]}>Opening Hours</Text>
+                  <Text style={[styles.infoText, { color: textSecondary }]}>{destination.openingHours}</Text>
                 </View>
               </View>
             </View>
           )}
 
           {destination.bestTimeToVisit && (
-            <View style={styles.infoCard}>
+            <View style={[styles.infoCard, { backgroundColor: card }]}>
               <View style={styles.infoRow}>
-                <Ionicons name="calendar-outline" size={20} color="#007AFF" />
+                <Ionicons name="calendar-outline" size={20} color={primary} />
                 <View style={styles.infoContent}>
-                  <Text style={styles.infoLabel}>Best Time to Visit</Text>
-                  <Text style={styles.infoText}>{destination.bestTimeToVisit}</Text>
+                  <Text style={[styles.infoLabel, { color: text }]}>Best Time to Visit</Text>
+                  <Text style={[styles.infoText, { color: textSecondary }]}>{destination.bestTimeToVisit}</Text>
                 </View>
               </View>
             </View>
@@ -206,12 +208,12 @@ export default function DestinationDetailsScreen() {
 
           {destination.facilities && destination.facilities.length > 0 && (
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Facilities</Text>
+              <Text style={[styles.sectionTitle, { color: text }]}>Facilities</Text>
               <View style={styles.tagsContainer}>
                 {destination.facilities.map((facility, index) => (
-                  <View key={index} style={styles.tag}>
-                    <Ionicons name="checkmark-circle" size={16} color="#34C759" />
-                    <Text style={styles.tagText}>{facility}</Text>
+                  <View key={index} style={[styles.tag, { backgroundColor: success + '20', borderColor: success + '40' }]}>
+                    <Ionicons name="checkmark-circle" size={16} color={success} />
+                    <Text style={[styles.tagText, { color: success }]}>{facility}</Text>
                   </View>
                 ))}
               </View>
@@ -220,12 +222,12 @@ export default function DestinationDetailsScreen() {
 
           {destination.activities && destination.activities.length > 0 && (
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Things to Do</Text>
+              <Text style={[styles.sectionTitle, { color: text }]}>Things to Do</Text>
               <View style={styles.tagsContainer}>
                 {destination.activities.map((activity, index) => (
-                  <View key={index} style={styles.activityTag}>
-                    <Ionicons name="star-outline" size={16} color="#FF9500" />
-                    <Text style={styles.activityTagText}>{activity}</Text>
+                  <View key={index} style={[styles.activityTag, { backgroundColor: warning + '20', borderColor: warning + '40' }]}>
+                    <Ionicons name="star-outline" size={16} color={warning} />
+                    <Text style={[styles.activityTagText, { color: warning }]}>{activity}</Text>
                   </View>
                 ))}
               </View>
@@ -234,50 +236,50 @@ export default function DestinationDetailsScreen() {
 
           <View style={styles.locationSection}>
             <View style={styles.locationHeader}>
-              <Ionicons name="location" size={18} color="#007AFF" />
-              <Text style={styles.sectionTitle}>Location</Text>
+              <Ionicons name="location" size={18} color={primary} />
+              <Text style={[styles.sectionTitle, { color: text }]}>Location</Text>
             </View>
-            <Text style={styles.locationText}>
+            <Text style={[styles.locationText, { color: textSecondary }]}>
               Lat: {destination.latitude.toFixed(4)}, Long: {destination.longitude.toFixed(4)}
             </Text>
           </View>
 
           {routes.length > 0 && (
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Available Routes</Text>
-              <Text style={styles.routesSubtitle}>
+              <Text style={[styles.sectionTitle, { color: text }]}>Available Routes</Text>
+              <Text style={[styles.routesSubtitle, { color: textSecondary }]}>
                 {routes.length} {routes.length === 1 ? 'route' : 'routes'} available
               </Text>
               {routes.map((route) => (
                 <TouchableOpacity
                   key={route.id}
-                  style={styles.routeCard}
+                  style={[styles.routeCard, { backgroundColor: card }]}
                   onPress={() => handleRoutePress(route)}
                   activeOpacity={0.7}
                 >
-                  <View style={styles.routeIconContainer}>
+                  <View style={[styles.routeIconContainer, { backgroundColor: backgroundSecondary }]}>
                     <Ionicons
                       name={getTransportIcon(route.transportMode)}
                       size={24}
-                      color="#007AFF"
+                      color={primary}
                     />
                   </View>
                   <View style={styles.routeContent}>
-                    <Text style={styles.routeName}>
+                    <Text style={[styles.routeName, { color: text }]}>
                       {route.from} → {route.to}
                     </Text>
                     <View style={styles.routeDetails}>
                       <View style={styles.routeDetailItem}>
-                        <Ionicons name="time-outline" size={14} color="#8E8E93" />
-                        <Text style={styles.routeDetailText}>{route.duration}</Text>
+                        <Ionicons name="time-outline" size={14} color={icon} />
+                        <Text style={[styles.routeDetailText, { color: textSecondary }]}>{route.duration}</Text>
                       </View>
                       <View style={styles.routeDetailItem}>
-                        <Ionicons name="cash-outline" size={14} color="#8E8E93" />
-                        <Text style={styles.routeDetailText}>LKR {route.price}</Text>
+                        <Ionicons name="cash-outline" size={14} color={icon} />
+                        <Text style={[styles.routeDetailText, { color: textSecondary }]}>LKR {route.price}</Text>
                       </View>
                     </View>
                   </View>
-                  <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
+                  <Ionicons name="chevron-forward" size={20} color={icon} />
                 </TouchableOpacity>
               ))}
             </View>
@@ -291,32 +293,27 @@ export default function DestinationDetailsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F2F2F7',
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F2F2F7',
     padding: 20,
   },
   errorText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#8E8E93',
     marginTop: 16,
   },
   backButton: {
     marginTop: 24,
     paddingHorizontal: 24,
     paddingVertical: 12,
-    backgroundColor: '#007AFF',
     borderRadius: 8,
   },
   backButtonText: {
@@ -384,7 +381,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#1C1C1E',
     marginRight: 8,
   },
   popularBadge: {
@@ -408,7 +404,6 @@ const styles = StyleSheet.create({
   ratingText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1C1C1E',
     marginLeft: 6,
   },
   categoryContainer: {
@@ -416,7 +411,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 12,
     paddingVertical: 6,
-    backgroundColor: '#E8F4FF',
     borderRadius: 8,
     alignSelf: 'flex-start',
     marginBottom: 24,
@@ -424,7 +418,6 @@ const styles = StyleSheet.create({
   category: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#007AFF',
     marginLeft: 6,
     textTransform: 'capitalize',
   },
@@ -434,13 +427,11 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1C1C1E',
     marginBottom: 12,
   },
   description: {
     fontSize: 16,
     lineHeight: 24,
-    color: '#3C3C43',
   },
   locationSection: {
     marginBottom: 24,
@@ -452,17 +443,14 @@ const styles = StyleSheet.create({
   },
   locationText: {
     fontSize: 14,
-    color: '#8E8E93',
   },
   routesSubtitle: {
     fontSize: 14,
-    color: '#8E8E93',
     marginBottom: 12,
   },
   routeCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
@@ -476,7 +464,6 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#F2F2F7',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -487,7 +474,6 @@ const styles = StyleSheet.create({
   routeName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1C1C1E',
     marginBottom: 6,
   },
   routeDetails: {
@@ -500,11 +486,9 @@ const styles = StyleSheet.create({
   },
   routeDetailText: {
     fontSize: 13,
-    color: '#8E8E93',
     marginLeft: 4,
   },
   infoCard: {
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -525,12 +509,10 @@ const styles = StyleSheet.create({
   infoLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1C1C1E',
     marginBottom: 4,
   },
   infoText: {
     fontSize: 14,
-    color: '#3C3C43',
     lineHeight: 20,
   },
   tagsContainer: {
@@ -541,33 +523,27 @@ const styles = StyleSheet.create({
   tag: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F0FDF4',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#BBF7D0',
   },
   tagText: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#16A34A',
     marginLeft: 6,
   },
   activityTag: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFF7ED',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#FED7AA',
   },
   activityTagText: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#EA580C',
     marginLeft: 6,
   },
 });

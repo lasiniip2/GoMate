@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Route } from '@/types/transport.types';
 import RouteCard from './RouteCard';
+import { useAppTheme } from '@/hooks/use-app-theme';
 
 interface RecentRoutesProps {
   routes: Route[];
@@ -11,6 +12,7 @@ interface RecentRoutesProps {
 
 export default function RecentRoutes({ routes, loading }: RecentRoutesProps) {
   const router = useRouter();
+  const { text, primary } = useAppTheme();
 
   const handleRoutePress = (route: Route) => {
     router.push({
@@ -22,9 +24,9 @@ export default function RecentRoutes({ routes, loading }: RecentRoutesProps) {
   if (loading) {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Recently Viewed</Text>
+        <Text style={[styles.title, { color: text }]}>Recently Viewed</Text>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#007AFF" />
+          <ActivityIndicator size="large" color={primary} />
         </View>
       </View>
     );
@@ -36,7 +38,7 @@ export default function RecentRoutes({ routes, loading }: RecentRoutesProps) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Recently Viewed</Text>
+      <Text style={[styles.title, { color: text }]}>Recently Viewed</Text>
       <View style={styles.content}>
         {routes.slice(0, 3).map((route) => (
           <RouteCard
@@ -56,9 +58,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   title: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '700',
-    color: '#1C1C1E',
     marginBottom: 16,
   },
   content: {

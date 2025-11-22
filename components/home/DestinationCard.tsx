@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'rea
 import { Ionicons } from '@expo/vector-icons';
 import { Destination } from '@/types/destination.types';
 import { useFavourites } from '@/context/FavouritesContext';
+import { useAppTheme } from '@/hooks/use-app-theme';
 
 interface DestinationCardProps {
   destination: Destination;
@@ -17,6 +18,7 @@ export default function DestinationCard({ destination, onPress, compact = false 
   const cardStyle = compact ? styles.cardCompact : styles.card;
   const { isDestinationFavourite, addDestination, removeDestination } = useFavourites();
   const isFavourite = isDestinationFavourite(destination.id);
+  const { card, text, textSecondary } = useAppTheme();
 
   const handleFavouritePress = async (e: any) => {
     e.stopPropagation();
@@ -28,7 +30,7 @@ export default function DestinationCard({ destination, onPress, compact = false 
   };
   
   return (
-    <TouchableOpacity style={cardStyle} onPress={onPress} activeOpacity={0.8}>
+    <TouchableOpacity style={[cardStyle, { backgroundColor: card }]} onPress={onPress} activeOpacity={0.8}>
       <Image
         source={{ uri: destination.image }}
         style={styles.image}
@@ -80,7 +82,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginRight: 16,
     overflow: 'hidden',
-    backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -92,7 +93,6 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 12,
     overflow: 'hidden',
-    backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -135,7 +135,6 @@ const styles = StyleSheet.create({
   categoryText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#1C1C1E',
     textTransform: 'capitalize',
   },
   popularBadge: {

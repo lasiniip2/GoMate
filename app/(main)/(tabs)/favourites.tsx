@@ -5,6 +5,7 @@ import FavouriteDestinations from '@/components/favourites/FavouriteDestinations
 import FavouriteRoutes from '@/components/favourites/FavouriteRoutes';
 import FavouriteSchedules from '@/components/favourites/FavouriteSchedules';
 import EmptyFavourites from '@/components/favourites/EmptyFavourites';
+import { useAppTheme } from '@/hooks/use-app-theme';
 
 export default function FavouritesScreen() {
   const {
@@ -14,6 +15,8 @@ export default function FavouritesScreen() {
     loading,
   } = useFavourites();
 
+  const { background, text, textSecondary, card, borderLight, primary } = useAppTheme();
+
   const hasAnyFavourites =
     favouriteDestinations.length > 0 ||
     favouriteRoutes.length > 0 ||
@@ -21,18 +24,18 @@ export default function FavouritesScreen() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>Loading favourites...</Text>
+      <View style={[styles.loadingContainer, { backgroundColor: background }]}>
+        <ActivityIndicator size="large" color={primary} />
+        <Text style={[styles.loadingText, { color: textSecondary }]}>Loading favourites...</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Favourites</Text>
-        <Text style={styles.headerSubtitle}>
+    <View style={[styles.container, { backgroundColor: background }]}>
+      <View style={[styles.header, { backgroundColor: card, borderBottomColor: borderLight }]}>
+        <Text style={[styles.headerTitle, { color: text }]}>Favourites</Text>
+        <Text style={[styles.headerSubtitle, { color: textSecondary }]}>
           Your saved destinations, routes, and schedules
         </Text>
       </View>
@@ -53,35 +56,28 @@ export default function FavouritesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F2F2F7',
   },
   loadingText: {
     marginTop: 12,
     fontSize: 16,
-    color: '#8E8E93',
   },
   header: {
     paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 20,
-    backgroundColor: '#fff',
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
   },
   headerTitle: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#1C1C1E',
   },
   headerSubtitle: {
     fontSize: 16,
-    color: '#8E8E93',
     marginTop: 4,
   },
   content: {

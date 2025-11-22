@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Route } from '@/types/transport.types';
+import { useAppTheme } from '@/hooks/use-app-theme';
 
 interface RoutesListProps {
   routes: Route[];
@@ -9,6 +10,8 @@ interface RoutesListProps {
 }
 
 export default function RoutesList({ routes, onRoutePress }: RoutesListProps) {
+  const { card, text, textSecondary, backgroundSecondary, primary, icon, success } = useAppTheme();
+  
   const getTransportIcon = (mode: string) => {
     switch (mode) {
       case 'train':
@@ -23,8 +26,8 @@ export default function RoutesList({ routes, onRoutePress }: RoutesListProps) {
   if (routes.length === 0) {
     return (
       <View style={styles.emptyState}>
-        <Ionicons name="search-outline" size={48} color="#C7C7CC" />
-        <Text style={styles.emptyText}>No routes found</Text>
+        <Ionicons name="search-outline" size={48} color={icon} />
+        <Text style={[styles.emptyText, { color: textSecondary }]}>No routes found</Text>
       </View>
     );
   }
@@ -34,46 +37,46 @@ export default function RoutesList({ routes, onRoutePress }: RoutesListProps) {
       {routes.map(route => (
         <TouchableOpacity
           key={route.id}
-          style={styles.routeCard}
+          style={[styles.routeCard, { backgroundColor: card }]}
           onPress={() => onRoutePress(route)}
           activeOpacity={0.7}
         >
-          <View style={styles.routeIconContainer}>
+          <View style={[styles.routeIconContainer, { backgroundColor: backgroundSecondary }]}>
             <Ionicons
               name={getTransportIcon(route.transportMode)}
               size={24}
-              color="#007AFF"
+              color={primary}
             />
           </View>
           <View style={styles.routeInfo}>
             <View style={styles.routeHeader}>
-              <Text style={styles.routeName}>{route.name}</Text>
+              <Text style={[styles.routeName, { color: text }]}>{route.name}</Text>
               {route.scenic && (
-                <View style={styles.scenicBadge}>
-                  <Ionicons name="eye" size={12} color="#34C759" />
-                  <Text style={styles.scenicText}>Scenic</Text>
+                <View style={[styles.scenicBadge, { backgroundColor: success + '20' }]}>
+                  <Ionicons name="eye" size={12} color={success} />
+                  <Text style={[styles.scenicText, { color: success }]}>Scenic</Text>
                 </View>
               )}
             </View>
-            <Text style={styles.routeFromTo}>
+            <Text style={[styles.routeFromTo, { color: textSecondary }]}>
               {route.from} → {route.to}
             </Text>
             <View style={styles.routeDetails}>
               <View style={styles.routeDetail}>
-                <Ionicons name="time-outline" size={14} color="#8E8E93" />
-                <Text style={styles.routeDetailText}>{route.duration}</Text>
+                <Ionicons name="time-outline" size={14} color={icon} />
+                <Text style={[styles.routeDetailText, { color: textSecondary }]}>{route.duration}</Text>
               </View>
               <View style={styles.routeDetail}>
-                <Ionicons name="navigate-outline" size={14} color="#8E8E93" />
-                <Text style={styles.routeDetailText}>{route.distance}</Text>
+                <Ionicons name="navigate-outline" size={14} color={icon} />
+                <Text style={[styles.routeDetailText, { color: textSecondary }]}>{route.distance}</Text>
               </View>
               <View style={styles.routeDetail}>
-                <Ionicons name="cash-outline" size={14} color="#8E8E93" />
-                <Text style={styles.routeDetailText}>LKR {route.price}</Text>
+                <Ionicons name="cash-outline" size={14} color={icon} />
+                <Text style={[styles.routeDetailText, { color: textSecondary }]}>LKR {route.price}</Text>
               </View>
             </View>
           </View>
-          <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
+          <Ionicons name="chevron-forward" size={20} color={icon} />
         </TouchableOpacity>
       ))}
     </View>
@@ -84,7 +87,6 @@ const styles = StyleSheet.create({
   routeCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -98,7 +100,6 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#F2F2F7',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -114,7 +115,6 @@ const styles = StyleSheet.create({
   routeName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1C1C1E',
     flex: 1,
   },
   scenicBadge: {
@@ -134,7 +134,6 @@ const styles = StyleSheet.create({
   },
   routeFromTo: {
     fontSize: 14,
-    color: '#8E8E93',
     marginBottom: 8,
   },
   routeDetails: {
@@ -148,7 +147,6 @@ const styles = StyleSheet.create({
   },
   routeDetailText: {
     fontSize: 12,
-    color: '#8E8E93',
     marginLeft: 4,
   },
   emptyState: {
@@ -158,7 +156,6 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 14,
-    color: '#8E8E93',
     marginTop: 12,
   },
 });

@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { FavouriteDestination } from '@/types/favourite.types';
 import { useFavourites } from '@/context/FavouritesContext';
+import { useAppTheme } from '@/hooks/use-app-theme';
 
 interface FavouriteDestinationsProps {
   favourites: FavouriteDestination[];
@@ -12,6 +13,7 @@ interface FavouriteDestinationsProps {
 export default function FavouriteDestinations({ favourites }: FavouriteDestinationsProps) {
   const router = useRouter();
   const { removeDestination } = useFavourites();
+  const { card, text, textSecondary } = useAppTheme();
 
   const handlePress = (destinationId: string) => {
     router.push({
@@ -30,9 +32,9 @@ export default function FavouriteDestinations({ favourites }: FavouriteDestinati
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Destinations ({favourites.length})</Text>
+      <Text style={[styles.sectionTitle, { color: text }]}>Destinations ({favourites.length})</Text>
       {favourites.map(fav => (
-        <View key={fav.id} style={styles.card}>
+        <View key={fav.id} style={[styles.card, { backgroundColor: card }]}>
           <TouchableOpacity
             style={styles.cardContent}
             onPress={() => handlePress(fav.destination.id)}
@@ -40,13 +42,13 @@ export default function FavouriteDestinations({ favourites }: FavouriteDestinati
           >
             <Image source={{ uri: fav.destination.image }} style={styles.image} />
             <View style={styles.info}>
-              <Text style={styles.name} numberOfLines={1}>
+              <Text style={[styles.name, { color: text }]} numberOfLines={1}>
                 {fav.destination.name}
               </Text>
-              <Text style={styles.category}>{fav.destination.category}</Text>
+              <Text style={[styles.category, { color: textSecondary }]}>{fav.destination.category}</Text>
               <View style={styles.rating}>
                 <Ionicons name="star" size={14} color="#FFD700" />
-                <Text style={styles.ratingText}>{fav.destination.rating.toFixed(1)}</Text>
+                <Text style={[styles.ratingText, { color: textSecondary }]}>{fav.destination.rating.toFixed(1)}</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -69,12 +71,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1C1C1E',
     marginBottom: 12,
   },
   card: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
     borderRadius: 12,
     marginBottom: 12,
     overflow: 'hidden',
@@ -101,12 +101,10 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1C1C1E',
     marginBottom: 4,
   },
   category: {
     fontSize: 13,
-    color: '#8E8E93',
     textTransform: 'capitalize',
     marginBottom: 6,
   },
@@ -117,7 +115,6 @@ const styles = StyleSheet.create({
   ratingText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1C1C1E',
     marginLeft: 4,
   },
   removeButton: {
