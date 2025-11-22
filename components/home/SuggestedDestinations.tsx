@@ -11,7 +11,7 @@ interface SuggestedDestinationsProps {
 }
 
 const CATEGORIES = [
-  { id: 'all', label: 'All', icon: 'apps' as const },
+  { id: 'all', label: 'Popular', icon: 'flame' as const },
   { id: 'landmark', label: 'Landmarks', icon: 'flag' as const },
   { id: 'beach', label: 'Beaches', icon: 'water' as const },
   { id: 'city', label: 'Cities', icon: 'business' as const },
@@ -48,8 +48,9 @@ export default function SuggestedDestinations({ destinations, loading }: Suggest
   }
 
   // Filter destinations by selected category
+  // For 'all' category, show only popular destinations (max 10)
   const filteredDestinations = selectedCategory === 'all'
-    ? destinations
+    ? destinations.filter(d => d.popular).slice(0, 10)
     : destinations.filter(d => d.category === selectedCategory);
 
   return (
@@ -91,8 +92,8 @@ export default function SuggestedDestinations({ destinations, loading }: Suggest
       </View>
 
       <View style={styles.gridContainer}>
-        {filteredDestinations.slice(0, 8).map((destination) => (
-          <View key={destination.id} style={styles.cardWrapper}>
+        {filteredDestinations.slice(0, 8).map((destination, index) => (
+          <View key={`destination-${destination.id}-${index}`} style={styles.cardWrapper}>
             <DestinationCard
               destination={destination}
               onPress={() => handleDestinationPress(destination)}

@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
   content: {
     position: 'absolute',
@@ -167,16 +167,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#fff',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
   description: {
     fontSize: 14,
     color: '#fff',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
   rating: {
     flexDirection: 'row',
@@ -188,8 +188,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#fff',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
 });
