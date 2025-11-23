@@ -19,13 +19,18 @@ function RootLayoutNav() {
     if (isLoading) return;
 
     const inAuthGroup = segments[0] === '(auth)';
+    const currentAuthScreen = segments[1]; // 'login' or 'signup'
 
     if (!isAuthenticated && !inAuthGroup) {
       // Redirect to login if not authenticated
       router.replace('/(auth)/login');
     } else if (isAuthenticated && inAuthGroup) {
-      // Redirect to home if authenticated and trying to access auth screens
-      router.replace('/(main)/(tabs)/home');
+      // Allow navigation between login and signup pages
+      // Only redirect to home if not on a specific auth screen
+      if (!currentAuthScreen) {
+        router.replace('/(main)/(tabs)/home');
+      }
+      // If user is on login or signup, don't redirect - they might want to switch accounts
     }
   }, [isAuthenticated, isLoading, segments]);
 

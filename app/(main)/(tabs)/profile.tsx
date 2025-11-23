@@ -228,8 +228,8 @@ export default function ProfileScreen() {
 
         {/* App Footer */}
         <View style={styles.footer}>
-          <Text style={[styles.footerText, { color: textSecondary }]}>Made with ❤️ for Sri Lankan Travelers</Text>
-          <Text style={[styles.footerCopyright, { color: textSecondary }]}>© 2024 GoMate. All rights reserved.</Text>
+          {/* <Text style={[styles.footerText, { color: textSecondary }]}>Made with ❤️ by Lasini Pallewaththa</Text> */}
+          <Text style={[styles.footerCopyright, { color: textSecondary }]}>© 2025 GoMate. All rights reserved.</Text>
         </View>
       </View>
     </ScrollView>
