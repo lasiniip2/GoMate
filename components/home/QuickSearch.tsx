@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { ThemedView } from '@/components/themed-view';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 export default function QuickSearch() {
@@ -16,13 +15,13 @@ export default function QuickSearch() {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <View style={styles.container}>
       <TouchableOpacity style={[styles.searchBox, { backgroundColor }]} onPress={handlePress} activeOpacity={0.7}>
         <Ionicons name="search" size={20} color={placeholderColor} style={styles.icon} />
         <Text style={[styles.placeholder, { color: placeholderColor }]}>Search destinations or routes...</Text>
         <Ionicons name="options-outline" size={20} color={placeholderColor} />
       </TouchableOpacity>
-    </ThemedView>
+    </View>
   );
 }
 
