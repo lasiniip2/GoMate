@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  ActivityIndicator,
-} from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { useFavourites } from '@/context/FavouritesContext';
+import { useAppTheme } from '@/hooks/use-app-theme';
 import { destinationService } from '@/services/destinationService';
 import { transportService } from '@/services/transportService';
 import { Destination } from '@/types/destination.types';
 import { Route } from '@/types/transport.types';
-import { useFavourites } from '@/context/FavouritesContext';
-import { useAppTheme } from '@/hooks/use-app-theme';
+import { Ionicons } from '@expo/vector-icons';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import {
+    ActivityIndicator,
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 
 export default function DestinationDetailsScreen() {
   const router = useRouter();
@@ -37,33 +37,28 @@ export default function DestinationDetailsScreen() {
       const dest = await destinationService.getDestinationById(id as string);
       setDestination(dest);
 
-      // Get routes based on destination's routes array or match by city name in route.to
+      // Get routes that go TO this destination (not routes starting from it)
       if (dest) {
         const allRoutes = await transportService.getAllRoutes();
-        let destinationRoutes: Route[] = [];
         
-        // First, try to use the routes array from destination if it exists
-        if (dest.routes && dest.routes.length > 0) {
-          destinationRoutes = allRoutes.filter(route => 
-            dest.routes!.includes(route.id)
+        // Extract city/location name from destination
+        const nameParts = dest.name.split(' ');
+        const destName = dest.name.toLowerCase();
+        
+        // Filter routes where the destination matches route.to field
+        const destinationRoutes = allRoutes.filter(route => {
+          const routeTo = route.to.toLowerCase();
+          
+          // Check if destination name or any significant part matches route.to
+          // Only match parts longer than 3 characters to avoid false matches
+          const matchesPart = nameParts.some(part => 
+            part.length > 3 && routeTo.includes(part.toLowerCase())
           );
-        }
-        
-        // If no routes found via routes array, try matching by name/location
-        if (destinationRoutes.length === 0) {
-          // Extract city name from destination name or use full name
-          const nameParts = dest.name.split(' ');
-          destinationRoutes = allRoutes.filter(route => {
-            const routeTo = route.to.toLowerCase();
-            const routeFrom = route.from.toLowerCase();
-            const destName = dest.name.toLowerCase();
-            
-            // Check if destination name or any part matches route destination
-            return nameParts.some(part => 
-              routeTo.includes(part.toLowerCase()) && part.length > 3
-            ) || routeTo.includes(destName);
-          });
-        }
+          const matchesFullName = routeTo.includes(destName);
+          
+          // Return true only if the route goes TO this destination
+          return matchesFullName || matchesPart;
+        });
         
         setRoutes(destinationRoutes);
       }
