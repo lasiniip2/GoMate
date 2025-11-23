@@ -1,69 +1,46 @@
-# GoMate - Sri Lanka Transport App
+# GoMate 
+A mobile app for exploring Sri Lanka's public transportation and tourist destinations. Built with React Native and Expo.
 
-GoMate is a comprehensive transport and travel application for exploring Sri Lanka, helping users find destinations, plan routes, and discover the beauty of Sri Lanka.
+## Features
+- User authentication and profile management
+- Browse and search destinations
+- Find public transport routes
+- Save favorite destinations, routes, and schedules
+- Dark/light theme support
+- View nearby stations and schedules
+
+## Tech Stack
+- React Native + Expo
+- TypeScript
+- Expo Router (file-based routing)
+- React Context for state management
+- AsyncStorage for local data
 
 ## Getting Started
-
-### Prerequisites
-
-- Node.js (v16 or higher)
-- npm or yarn
-- Expo CLI
-- iOS Simulator / Android Emulator / Expo Go app
-
-### Installation
-
 1. Install dependencies:
-
    ```bash
    npm install
    ```
-
-2. Start the development server:
-
+2. Start the app:
    ```bash
-   npm start
+   npx expo start
    ```
-
-3. Run on your preferred platform:
-   - Press `i` for iOS simulator
-   - Press `a` for Android emulator
-   - Scan QR code with Expo Go app for physical device
-
-### Environment Setup
-
-Copy `.env.example` to `.env` and configure your API keys:
-
-```bash
-cp .env.example .env
-```
+3. Run on device:
+   - Press `a` for Android
+   - Press `i` for iOS
+   - Scan QR code with Expo Go
 
 ## Project Structure
+```
+app/              # Screens (file-based routing)
+components/       # Reusable UI components
+context/          # Global state management
+services/         # API and business logic
+types/            # TypeScript definitions
+utils/            # Helper functions
+constants/        # Theme and config
+```
 
-- `/app` - Application screens and navigation
-  - `/(auth)` - Authentication screens (login, signup)
-  - `/(main)` - Main app screens
-    - `/(tabs)` - Bottom tab navigation screens
-- `/components` - Reusable UI components
-- `/services` - API and data services
-- `/context` - React context providers
-- `/types` - TypeScript type definitions
-- `/utils` - Helper functions and utilities
-- `/constants` - App constants and theme configuration
-- `/hooks` - Custom React hooks
-
-## Features
-
-- **Destination Discovery**: Explore popular Sri Lankan destinations
-- **Route Planning**: Find and save transport routes
-- **Favourites**: Save favorite destinations, routes, and schedules
-- **User Authentication**: Secure login and profile management
-- **Theme Support**: Light and dark mode
-- **Search**: Find destinations across Sri Lanka
-
-## Learn More
-
-- [Expo Documentation](https://docs.expo.dev/)
-- [React Native Documentation](https://reactnative.dev/)
-- [Expo Router Documentation](https://docs.expo.dev/router/introduction/)
+## Environment Setup
+Copy `.env.example` to `.env` and add your configuration.
 
